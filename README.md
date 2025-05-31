@@ -2,7 +2,7 @@
 
 Welcome to your capstone e‑commerce project! This starter repo gives you everything you need to build a full-stack online store using the PERN stack: PostgreSQL, Express, React (via Vite), and Node.js.
 
-This project is designed to help you skip the boilerplate and dive straight into feature development. It includes JWT-based auth, seed data, and a clean file structure.
+This project is designed to help you skip the boilerplate and dive straight into feature development.
 
 > 💡 Replace the project title and customize the design to make it your own storefront!
 
@@ -27,7 +27,6 @@ This project is designed to help you skip the boilerplate and dive straight into
 - ➕ **Cart Management** – add, increment, decrement, and remove items.
 - 🔐 **JWT Auth** – register / login with secure password hashing.
 - 💾 **Persisted Cart** – cart survives page refresh and syncs after login.
-- 📦 **Seed Data** – 10 demo products, 2 demo users seeded automatically.
 - ⚙️ **Admin CRUD** – create, update & delete products, manage users & orders (Tier 4 task).
 
 > See `REQUIREMENTS.md` for the full milestone checklist.
@@ -118,7 +117,6 @@ npm run dev    # Frontend on http://localhost:5173, API on http://localhost:3000
 | Command            | Description                              |
 | ------------------ | ---------------------------------------- |
 | `npm run dev`      | Starts frontend and backend concurrently |
-| `npm run seed`     | Syncs and seeds the PostgreSQL database  |
 | `npm run migrate`  | Runs Sequelize migrations                |
 | `npm run rollback` | Reverts last Sequelize migration         |
 
