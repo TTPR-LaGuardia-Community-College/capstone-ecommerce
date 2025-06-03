@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "category": "snacks",
+    "name": "Chips",
+    "price": 3.4,
+    "img": "https://i5.walmartimages.com/seo/Lay-s-Potato-Chips-Classic-Flavor-Bag-8-Oz_79a64bb3-a12b-478b-8424-c58085e7beb9.7d1743453dc6ea3ca7d88e58adb58cef.jpeg?odnHeight=640&odnWidth=640&odnBg=FFFFFF",
+    "quanty": 1
+  },
+  {
+    "id": 2,
+    "category": "snacks",
+    "name": "Chocolate Bar",
+    "price": 2.68,
+    "img": "https://i5.walmartimages.com/seo/Snickers-Fun-Size-Milk-Chocolate-Bars-10-Ct_81f70c4a-3b80-4d82-b439-db2e247fc87d.2ba3231d094dc2cc9488b6e7240990dd.jpeg?odnHeight=640&odnWidth=640&odnBg=FFFFFF",
+    "quanty": 1
+  },
+  {
+    "id": 3,
+    "category": "snacks",
+    "name": "Granola Bar",
+    "price": 6.63,
+    "img": "https://i5.walmartimages.com/seo/Sunbelt-Bakery-Chewy-Granola-Bars-Chocolate-Chip-15-Ct_ed85648e-99ba-4fe4-9f15-508ae70e596f.ea8deaf5585bcba0f4005d6a41b7de40.png?odnHeight=2000&odnWidth=2000&odnBg=FFFFFF",
+    "quanty": 1
+  },
+  {
+    "id": 4,
+    "category": "snacks",
+    "name": "Popcorn",
+    "price": 6.58,
+    "img": "https://i5.walmartimages.com/seo/Skinnypop-Gluten-Free-Original-Popcorn-8-0-oz-Family-Size-Bag-Skinny-Pop-Healthy-Popcorn-Snacks_4684deba-df0b-47b3-a76e-201ae5f8575e.bdb832d7f71b7c86e2230a4d80f3c1ef.png?odnHeight=640&odnWidth=640&odnBg=FFFFFF",
+    "quanty": 1
+  },
+  {
+    "id": 5,
+    "category": "snacks",
+    "name": "Trail Mix",
+    "price": 4.4,
+    "img": "https://i5.walmartimages.com/seo/Power-Up-Protein-Packed-Trail-Mix-14oz-Gluten-Free-Vegan-Non-GMO_e260ca88-d162-4930-be61-63f9f7aab557.e983d64dd1e8eb237405a1ee86760519.png?odnHeight=2000&odnWidth=2000&odnBg=FFFFFF",
+    "quanty": 1
+  },
+  {
+    "id": 6,
+    "category": "beverages",
+    "name": "Bottled Water",
+    "price": 1.57,
+    "img": "https://i5.walmartimages.com/seo/Great-Value-Spring-Water-1-Gallon_94e71014-99c7-41c8-9761-5b35b3a3ad03.a810c097d3de2884839b74477fb228f8.jpeg?odnHeight=2000&odnWidth=2000&odnBg=FFFFFF",
+    "quanty": 1
+  },
+  {
+    "id": 7,
+    "category": "beverages",
+    "name": "Soda",
+    "price": 3.1,
+    "img": "https://i5.walmartimages.com/seo/Coca-Cola-Soda-Pop-20-fl-oz-Bottle_03aeb90d-d04c-4751-bf27-3177777c98d2.fab19ed449b41fedf7b6a48b33856a5d.jpeg?odnHeight=2000&odnWidth=2000&odnBg=FFFFFF",
+    "quanty": 1
+  },
+  {
+    "id": 8,
+    "category": "beverages",
+    "name": "Energy Drink",
+    "price": 5.26,
+    "img": "https://i5.walmartimages.com/seo/Red-Bull-Energy-Drink-114mg-Caffeine-12-fl-oz-Can_cc297042-66be-4db1-9ff0-e626f6c43322.d5c5ca669d0978adca72bf0c7504e6ed.jpeg?odnHeight=2000&odnWidth=2000&odnBg=FFFFFF",
+    "quanty": 1
+  },
+  {
+    "id": 9,
+    "category": "beverages",
+    "name": "Iced Tea",
+    "price": 9.98,
+    "img": "https://i5.walmartimages.com/seo/Pure-Leaf-Lemon-Iced-Tea-64-fl-oz-Bottle_5b34edea-b8bc-4b8a-ae05-dbb134fc00e2.76d4d89b0289086021eff3fa2aa317db.jpeg?odnHeight=2000&odnWidth=2000&odnBg=FFFFFF",
+    "quanty": 1
+  },
+  {
+    "id": 10,
+    "category": "beverages",
+    "name": "Juice Box",
+    "price": 4.79,
+    "img": "https://i5.walmartimages.com/seo/Tampico-Mango-Punch-Mango-Orange-Tangerine-Juice-Drink-1-Gallon_c4ca61d7-72a4-4957-b4f4-85a5a161846e.322adefccf39be4c656b828de43cfdba.jpeg?odnHeight=640&odnWidth=640&odnBg=FFFFFF",
+    "quanty": 1
+  },
+  {
+    "id": 11,
+    "category": "personal_care",
+    "name": "Toothpaste",
+    "price": 2.43,
+    "img": "https://i5.walmartimages.com/seo/Colgate-Optic-White-Purple-Whitening-Toothpaste-Mint-Paste-4-2-oz-Tube_4d8de4d2-2012-411e-b1f5-446c5b488877.fddfdb3ed9b2be511abdad4444e8ca50.jpeg?odnHeight=640&odnWidth=640&odnBg=FFFFFF",
+    "quanty": 1
+  },
+  {
+    "id": 12,
+    "category": "personal_care",
+    "name": "Shampoo",
+    "price": 3.37,
+    "img": "https://i5.walmartimages.com/seo/Head-and-Shoulders-Dandruff-Shampoo-Classic-Clean-8-45-fl-oz_216cf88e-960a-41e0-b221-3cd78061db26.8a830739f18cc9dab17956d7ac7918d9.jpeg?odnHeight=2000&odnWidth=2000&odnBg=FFFFFF",
+    "quanty": 1
+  },
+  {
+    "id": 13,
+    "category": "personal_care",
+    "name": "Deodorant",
+    "price": 1.06,
+    "img": "https://i5.walmartimages.com/seo/Old-Spice-Aluminum-Free-Deodorant-for-Men-Invisible-Solid-Stick-Swagger-3-0-oz_5d82be5d-175b-425e-99ed-105258142c79.ff83d0d9b0523ba8dbeea1ef2f326f4d.jpeg?odnHeight=2000&odnWidth=2000&odnBg=FFFFFF",
+    "quanty": 1
+  },
+  {
+    "id": 14,
+    "category": "personal_care",
+    "name": "Soap",
+    "price": 2.04,
+    "img": "https://i5.walmartimages.com/seo/Dial-Liquid-Hand-Soap-Ocean-Splash-7-5-fl-oz_745341ca-b78a-4fff-b461-f8b9f20bc1f6.9558dc0c15ac188eff363a2437489bdc.png?odnHeight=2000&odnWidth=2000&odnBg=FFFFFF",
+    "quanty": 1
+  },
+  {
+    "id": 15,
+    "category": "personal_care",
+    "name": "Toilet Paper",
+    "price": 9.26,
+    "img": "https://i5.walmartimages.com/seo/Toilet-Paper-4-Rolls-150-2-Ply-Sheets-per-Roll_6a4d46da-4094-4829-aac9-84319cfad40f.936209eaf7214446099d8aa56b622c62.jpeg?odnHeight=2000&odnWidth=2000&odnBg=FFFFFF",
+    "quanty": 1
+  }
+]
