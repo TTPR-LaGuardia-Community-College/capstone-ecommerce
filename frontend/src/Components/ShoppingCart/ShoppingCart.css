@@ -1,0 +1,15 @@
+.product-card-container {
+
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin: 30px;
+}
+
+.product-card-container > img {
+
+    height: 120px;
+    width: 100px;
+    text-align: center;
+
+}
