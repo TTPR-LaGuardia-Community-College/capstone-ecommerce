@@ -9,6 +9,7 @@ const NavigationBar = () => {
       <nav className='navbar'>
         <Link to  = '/'>
         <h1 className='navbar-logo'>logo goes here</h1>
+        <h1>helloooo</h1>
         </Link>
         <Link to = '/cart'>
         <h2 className='navbar-cart'>🛒</h2>
