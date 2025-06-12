@@ -22,7 +22,7 @@ if (config.use_env_variable) {
     port: config.port,
     dialect: "postgresql",
     dialectModule: pg,
-    logging: env === "development" ? console.log : false, // Enable logging in development
+    logging: env === "development" ? console.log : false, 
   });
 }
 
