@@ -7,7 +7,7 @@ const Sequelize = require("sequelize");
 const process = require("process");
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
-const config = require("./config/config.json")[env];
+const config = require("../config/config.json")[env];
 const db = {};
 
 let sequelize;
@@ -22,7 +22,7 @@ if (config.use_env_variable) {
     port: config.port,
     dialect: "postgresql",
     dialectModule: pg,
-    logging: env === "development" ? console.log : false, // Enable logging in development
+    logging: env === "development" ? console.log : false, 
   });
 }
 
