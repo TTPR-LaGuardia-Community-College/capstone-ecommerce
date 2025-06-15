@@ -26,6 +26,15 @@
     transform: rotate(360deg);
   }
 }
+/* src/App.css */
+.heart-icon {
+  color: red;
+}
+
+.heart-icon:hover {
+  transform: scale(1.2);
+  transition: 0.2s ease;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {

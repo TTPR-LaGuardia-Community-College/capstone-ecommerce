@@ -1,16 +1,14 @@
 {
-  "name": "ttpr_chat",
+  "name": "campustrade",
+  "version": "1.0.0",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "proxy": "http:localhost:3000",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
     "axios": "^1.9.0",
     "jwt-decode": "^4.0.0",
     "react": "^19.1.0",
@@ -29,5 +27,14 @@
     "globals": "^16.0.0",
     "prettier": "^3.5.3",
     "vite": "^6.3.5"
+=======
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.23.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.1.0",
+    "vite": "^5.2.0"
+>>>>>>> main
   }
 }
