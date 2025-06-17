@@ -1,22 +1,7 @@
-<<<<<<< HEAD
-// frontend/src/pages/Login.jsx
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import api from "../api.js";
-
-export default function Login() {
-  // need code here!!
-
-  return (
-    <div>
-        // here too!!
-    </div>
-  );
-}
-=======
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import api from "../api.js";
 
 const Login = () => {
   const [form, setForm] = useState({ username: '', password: '' });
@@ -90,4 +75,3 @@ const Login = () => {
 };
 
 export default Login;
->>>>>>> main
