@@ -1,0 +1,2 @@
+// api.js
+export default {};
