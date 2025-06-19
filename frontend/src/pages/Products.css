@@ -1,3 +1,5 @@
+/* ─── products.css ──────────────────────────────────────────────── */
+
 /* 1) Page wrapper */
 .products-page {
   padding: 2rem 1rem;
@@ -6,7 +8,7 @@
   margin: auto;
 }
 
-/* 2) Page title “Products” in red */
+/* 2) Title in red */
 .products-page h2 {
   text-align: center;
   font-size: 2rem;
@@ -43,7 +45,7 @@
   border-radius: 6px;
 }
 
-/* 6) Product heading in red */
+/* 6) Heading in red */
 .product-card h4 {
   margin: 0.8rem 0 0.3rem;
   font-size: 1.2rem;
@@ -56,7 +58,7 @@
   font-size: 0.95rem;
 }
 
-/* 8) Rating (keep gold) */
+/* 8) Rating (unchanged) */
 .product-card .rating {
   font-size: 1.1rem;
   color: gold;
@@ -78,15 +80,13 @@
   background-color: #a8323a;
 }
 
-/* 10) Icon/Span hover effect */
+/* 10) Hover effects */
 .product-card span {
   transition: transform 0.2s ease;
 }
 .product-card span:hover {
   transform: scale(1.2);
 }
-
-/* 11) Subtle underline on hover */
 .product-card h4:hover,
 .product-card img:hover,
 .product-card p:hover {

@@ -1,3 +1,5 @@
+/* ─── index.css ───────────────────────────────────────────────── */
+
 /* 1) Google Font + box-sizing reset */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
@@ -17,18 +19,16 @@ body {
     linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.6)),
     url('/images/shop.png') no-repeat center center fixed;
   background-size: cover;
-
-  /* fallback color */
   background-color: #f0f4f8;
 }
 
-/* 3) Header (frosted-glass) */
+/* 3) Header (glass) */
 header {
   background-color: rgba(255,255,255,0.7);
   backdrop-filter: blur(6px);
 }
 
-/* 4) Global link colors → true-red */
+/* 4) Global links now red (outside navbar) */
 a {
   color: #e63946;
   text-decoration: none;
@@ -38,19 +38,19 @@ a:hover {
   text-decoration: underline;
 }
 
-/* 5) Form elements inherit Roboto */
+/* 5) Form elements */
 button,
-input, 
-textarea, 
+input,
+textarea,
 select {
   font-family: inherit;
   font-size: 1rem;
 }
 
 /* 6) Inputs/buttons styling */
-input, 
-textarea, 
-select, 
+input,
+textarea,
+select,
 button {
   padding: 0.5rem;
   border: 1px solid #d1d5db;
@@ -76,23 +76,4 @@ img {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-}
-
-/* ─── OVERRIDE: Make nav “active” links red, too ───────────────────────────────── */
-.navbar a,
-.navbar a.active {
-  color: #e63946 !important;
-}
-.navbar a:hover,
-.navbar a.active:hover {
-  color: #a8323a !important;
-}
-
-/* ─── OVERRIDE: Turn count badges red ───────────────────────────────────────────── */
-.badge,
-.MuiBadge-badge,      /* if you’re using MUI */
-.cart-count,          /* or any custom class you gave the little bubble */
-.liked-count {        /* adjust to match your markup */
-  background-color: #e63946 !important;
-  color: #fff !important;
 }

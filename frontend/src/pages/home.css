@@ -1,6 +1,6 @@
 /* ─── home.css ───────────────────────────────────────────────── */
 
-/* 1) Container styling (unchanged) */
+/* 1) Container */
 .home-container {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(8px);
@@ -12,27 +12,28 @@
   box-shadow: 0 8px 24px rgba(7, 76, 166, 0.08);
 }
 
-/* 2) Hero text title in red */
+/* 2) Hero heading in red + serif */
 .home-container h1 {
   font-size: 3rem;
   font-weight: 700;
-  color: #e63946;                           /* ← turned red */
+  color: #e63946;
+  font-family: 'Playfair Display', serif;
   margin-bottom: 0.5rem;
 }
 
-/* 3) Hero subtitle (keep grey) */
+/* 3) Hero subtitle */
 .home-container p {
   font-size: 1.1rem;
   font-weight: 400;
   color: #555;
 }
 
-/* 4) Browse Listings button in red */
+/* 4) Browse button in red */
 .browse-btn {
   margin-top: 1.2rem;
   padding: 0.8rem 1.6rem;
   font-size: 1rem;
-  background-color: #e63946;                /* ← red background */
+  background-color: #e63946;
   color: white;
   border: none;
   border-radius: 8px;
@@ -41,10 +42,10 @@
   transition: background-color 0.2s ease;
 }
 .browse-btn:hover {
-  background-color: #a8323a;                /* darker red on hover */
+  background-color: #a8323a;
 }
 
-/* 5) Feature cards */
+/* 5) Features */
 .features {
   display: flex;
   flex-wrap: wrap;
@@ -68,18 +69,18 @@
 /* 5a) Card icons in red */
 .feature-icon {
   font-size: 2rem;
-  color: #e63946;                            /* ← red icons */
+  color: #e63946;
 }
 
-/* 5b) Card headings in red */
+/* 5b) Card titles in red */
 .feature-card h3 {
   font-size: 1.2rem;
   font-weight: 500;
   margin: 0.5rem 0;
-  color: #e63946;                            /* ← red text */
+  color: #e63946;
 }
 
-/* 5c) Card body copy (keep dark grey) */
+/* 5c) Card text */
 .feature-card p {
   margin: 0;
   font-size: 0.95rem;
