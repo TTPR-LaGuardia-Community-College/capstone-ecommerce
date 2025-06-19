@@ -47,25 +47,34 @@
 
 // export default SearchBar;
 
-import React, { useState } from "react";
+// src/components/SearchBar.jsx
+import React, { useState, useEffect } from "react";
+import "./SearchBar.css";
 
-export default function SearchBar({ onSearch }) {
+export default function SearchBar({ onSearch, delay = 300 }) {
   const [q, setQ] = useState("");
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    onSearch(q);
-  }
+  useEffect(() => {
+    const handle = setTimeout(() => {
+      onSearch(q.trim());
+    }, delay);
+    return () => clearTimeout(handle);
+  }, [q, onSearch, delay]);
 
   return (
-    <form onSubmit={handleSubmit} className="search-bar">
+    <div className="search-bar">
       <input
         type="text"
         placeholder="Search products…"
         value={q}
-        onChange={e => setQ(e.target.value)}
+        onChange={(e) => setQ(e.target.value)}
       />
-      <button type="submit">Search</button>
-    </form>
+      {q && (
+        <button className="clear-btn" onClick={() => setQ("")}>
+          ✕
+        </button>
+      )}
+    </div>
   );
 }
+

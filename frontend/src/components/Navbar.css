@@ -1,51 +1,83 @@
-/* src/components/Navbar.css */
-
 .navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background: #f9f9f9;
-  border-bottom: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  font-family: 'Segoe UI', sans-serif;
+  padding: 0.5rem 1rem;
 }
-
-.logo {
+.navbar__burger {
+  display: none;
+  background: none;
+  border: none;
   font-size: 1.5rem;
-  font-weight: bold;
-  color: #2e8b57;
-  text-decoration: none;
 }
-
-.nav-links {
+.navbar__nav {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
+  flex: 1;
+  justify-content: flex-end;
 }
-
-.nav-item {
-  font-weight: 500;
-  color: #333;
+.nav__item {
   text-decoration: none;
-  transition: color 0.2s ease;
-  position: relative;
 }
-
-.nav-item:hover,
-.nav-item.active {
-  color: #2e8b57;
+.nav__item.active {
+  font-weight: bold;
+  border-bottom: 2px solid currentColor;
 }
-
 .badge {
-  background: #2e8b57;
+  background: red;
   color: white;
-  font-size: 0.7rem;
-  padding: 2px 6px;
-  border-radius: 10px;
-  margin-left: 4px;
+  border-radius: 50%;
+  padding: 0 0.4rem;
+  margin-left: 0.2rem;
+  font-size: 0.8rem;
+}
+/* mobile */
+@media (max-width: 600px) {
+  .navbar__burger { display: block; }
+  .navbar__nav { 
+    position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; background: var(--bg);
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.2s ease;
+  }
+  .navbar__nav.open { max-height: 80vh; }
+}
+/* dark mode */
+@media (prefers-color-scheme: dark) {
+  .navbar {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+  }
+  .navbar__nav {
+    background: var(--bg-dark);
+  }
+  .nav__item {
+    color: var(--text-dark);
+  }
+  .nav__item.active {
+    border-color: var(--text-dark);
+  }
+  .badge {
+    background: var(--badge-bg-dark);
+    color: var(--badge-text-dark);
+  }
+}
+/* light mode */
+@media (prefers-color-scheme: light) {
+  .navbar {
+    background: var(--bg-light);
+    color: var(--text-light);
+  }
+  .navbar__nav {
+    background: var(--bg-light);
+  }
+  .nav__item {
+    color: var(--text-light);
+  }
+  .nav__item.active {
+    border-color: var(--text-light);
+  }
+  .badge {
+    background: var(--badge-bg-light);
+    color: var(--badge-text-light);
+  }
 }
