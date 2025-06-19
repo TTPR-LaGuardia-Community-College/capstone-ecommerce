@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import api from "../api.js";
+import "./Messages.css";
 
-function Messages() {
+export default function Messages() {
   const [inbox, setInbox] = useState([]);
   const [sent, setSent]   = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState("");
 
   useEffect(() => {
-    async function load() {
+    (async () => {
       try {
         const [inRes, sentRes] = await Promise.all([
           api.get("/messages/inbox"),
@@ -15,33 +18,45 @@ function Messages() {
         setInbox(inRes.data);
         setSent(sentRes.data);
       } catch (err) {
-        console.error("Messages load failed", err);
+        setError("Failed to load messages");
+      } finally {
+        setLoading(false);
       }
-    }
-    load();
+    })();
   }, []);
+
+  if (loading) return <p>Loading messages…</p>;
+  if (error)   return <p className="error">{error}</p>;
 
   return (
     <div className="messages-page">
-      <h1>Inbox</h1>
-      {inbox.map((m) => (
-        <div key={m.id} className="message-card">
-          <strong>From:</strong> {m.sender.username}<br/>
-          <em>{new Date(m.createdAt).toLocaleString()}</em>
-          <p>{m.content}</p>
-        </div>
-      ))}
+      <section>
+        <h2>Inbox</h2>
+        {inbox.length === 0 && <p>No messages.</p>}
+        {inbox.map((m) => (
+          <article key={m.id} className="message-card">
+            <header>
+              From: <strong>{m.sender.username}</strong>
+              <time>{new Date(m.createdAt).toLocaleString()}</time>
+            </header>
+            <p>{m.content}</p>
+          </article>
+        ))}
+      </section>
 
-      <h1>Sent</h1>
-      {sent.map((m) => (
-        <div key={m.id} className="message-card">
-          <strong>To:</strong> {m.receiver.username}<br/>
-          <em>{new Date(m.createdAt).toLocaleString()}</em>
-          <p>{m.content}</p>
-        </div>
-      ))}
+      <section>
+        <h2>Sent</h2>
+        {sent.length === 0 && <p>You haven’t sent any.</p>}
+        {sent.map((m) => (
+          <article key={m.id} className="message-card">
+            <header>
+              To: <strong>{m.receiver.username}</strong>
+              <time>{new Date(m.createdAt).toLocaleString()}</time>
+            </header>
+            <p>{m.content}</p>
+          </article>
+        ))}
+      </section>
     </div>
   );
 }
-
-export default Messages;

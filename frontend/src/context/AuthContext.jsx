@@ -1,12 +1,14 @@
+// src/context/AuthContext.jsx
 import React, {
   createContext,
+  useContext,
   useState,
   useEffect,
   useCallback
 } from "react";
 import api from "../api.js";
 
-export const AuthContext = createContext({
+const AuthContext = createContext({
   user: null,
   loading: true,
   error: null,
@@ -20,49 +22,32 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      api.defaults.headers.common.Authorization = `Bearer ${token}`;
-    }
-
-    const eject = api.interceptors.response.use(
-      (res) => res,
-      (err) => {
-        if (err.response?.status === 401) {
-          logout();
-        }
-        return Promise.reject(err);
-      }
-    );
-    return () => api.interceptors.response.eject(eject);
-  }, []);
-
+  // Helper to fetch profile if token present
   const fetchProfile = useCallback(async () => {
     setLoading(true);
     try {
       const { data } = await api.get("/auth/profile");
       setUser(data);
       setError(null);
-    } catch (err) {
+    } catch {
       setUser(null);
-      setError(err.response?.data?.error || err.message);
-      localStorage.removeItem("token");
-      delete api.defaults.headers.common.Authorization;
     } finally {
       setLoading(false);
     }
   }, []);
 
+  // On mount, check token
   useEffect(() => {
-    if (localStorage.getItem("token")) {
+    const token = localStorage.getItem("token");
+    if (token) {
+      api.defaults.headers.common.Authorization = `Bearer ${token}`;
       fetchProfile();
     } else {
       setLoading(false);
     }
   }, [fetchProfile]);
 
-  //  login()
+  // login
   const login = useCallback(async (email, password) => {
     setLoading(true);
     try {
@@ -79,7 +64,7 @@ export function AuthProvider({ children }) {
     }
   }, [fetchProfile]);
 
-  //  register()
+  // register
   const register = useCallback(async (username, email, password) => {
     setLoading(true);
     try {
@@ -94,11 +79,11 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  //  logout()
+  // logout
   const logout = useCallback(() => {
     localStorage.removeItem("token");
-    setUser(null);
     delete api.defaults.headers.common.Authorization;
+    setUser(null);
   }, []);
 
   return (
@@ -108,4 +93,9 @@ export function AuthProvider({ children }) {
       {children}
     </AuthContext.Provider>
   );
+}
+
+// NEW: export a custom hook for easier consumption
+export function useAuth() {
+  return useContext(AuthContext);
 }

@@ -81,41 +81,54 @@
 
 // export default ListingDetail;
 
+
 import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api.js";
 import { CartContext } from "../context/CartContext.jsx";
+import { toast } from "react-toastify";
+import "./ProductDetail.css";
 
-function ProductDetail() {
+export default function ProductDetail() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const { addToCart } = useContext(CartContext);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState("");
+  const { addToCart }         = useContext(CartContext);
 
   useEffect(() => {
-    async function fetchOne() {
+    (async () => {
       try {
-        const res = await api.get(`/products/${id}`);
+        const res = await api.get(`/listings/${id}`);
         setProduct(res.data);
-      } catch (err) {
-        console.error("Failed to load product", err);
+      } catch {
+        setError("Failed to load product");
+      } finally {
+        setLoading(false);
       }
-    }
-    fetchOne();
+    })();
   }, [id]);
 
-  if (!product) return <p>Loading…</p>;
+  if (loading) return <p>Loading…</p>;
+  if (error)   return <p className="error">{error}</p>;
 
   return (
     <div className="product-detail">
       <img src={product.imageUrl} alt={product.title} />
-      <h1>{product.title}</h1>
-      <p>${product.price.toFixed(2)}</p>
-      <p>{product.description}</p>
-      <button onClick={() => addToCart(product.id)}>
-        Add to Cart
-      </button>
+      <div className="info">
+        <h1>{product.title}</h1>
+        <p>${parseFloat(product.price).toFixed(2)}</p>
+        <p>{product.description}</p>
+        <button
+          onClick={async () => {
+            await addToCart(product.id);
+            toast.success("Added to cart");
+          }}
+        >
+          Add to Cart
+        </button>
+      </div>
     </div>
   );
 }
 
-export default ProductDetail;

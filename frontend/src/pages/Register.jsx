@@ -129,56 +129,81 @@
 
 // export default Signup;
 
+
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
+import { toast } from "react-toastify";
+import "./Auth.css";
 
-function Register() {
-  const navigate = useNavigate();
-  const { register } = useContext(AuthContext);
-  const [form, setForm] = useState({
-    username: "", email: "", password: ""
-  });
-  const [err, setErr] = useState("");
+export default function Register() {
+  const { register } = useAuth();
+  const nav           = useNavigate();
+  const [form, setForm] = useState({ username:"", email:"", password:"" });
+  const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState("");
 
-  function onChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
+  const onChange = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
-  async function onSubmit(e) {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await register(form.username, form.email, form.password);
-      navigate("/login");
-    } catch (error) {
-      setErr("Registration failed");
+    setError("");
+    setLoading(true);
+    const success = await register(form.username, form.email, form.password);
+    setLoading(false);
+    if (success) {
+      toast.success("Registered! Please login.");
+      nav("/login");
+    } else {
+      setError("Registration failed.");
     }
-  }
+  };
 
   return (
     <div className="auth-page">
       <h1>Register</h1>
+      {error && <p className="error">{error}</p>}
       <form onSubmit={onSubmit}>
-        {err && <p className="error">{err}</p>}
         <label>
-          Username:
-          <input name="username" onChange={onChange} required />
+          Username
+          <input
+            name="username"
+            value={form.username}
+            onChange={onChange}
+            required
+            disabled={loading}
+          />
         </label>
         <label>
-          Email:
-          <input name="email" type="email" onChange={onChange} required />
+          Email
+          <input
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={onChange}
+            required
+            disabled={loading}
+          />
         </label>
         <label>
-          Password:
-          <input name="password" type="password" onChange={onChange} required />
+          Password
+          <input
+            name="password"
+            type="password"
+            value={form.password}
+            onChange={onChange}
+            required
+            disabled={loading}
+          />
         </label>
-        <button type="submit">Register</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Registering…" : "Register"}
+        </button>
       </form>
       <p>
-        Already have an account? <Link to="/login">Login here</Link>.
+        Already registered? <Link to="/login">Login here</Link>.
       </p>
     </div>
   );
 }
 
-export default Register;

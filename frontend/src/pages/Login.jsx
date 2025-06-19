@@ -59,44 +59,67 @@
 
 // export default Login;
 
+
 import React, { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext.jsx";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx";
+import { toast } from "react-toastify";
+import "./Auth.css";
 
-function Login() {
+export default function Login() {
+  const { login } = useAuth();
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [err, setErr] = useState("");
+  const { state } = useLocation();
+  const [form, setForm] = useState({ email:"", password:"" });
+  const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState("");
 
-  function onChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
+  const onChange = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
-  async function onSubmit(e) {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await login(form.email, form.password);
-      navigate("/");
-    } catch (error) {
-      setErr("Invalid credentials");
+    setError("");
+    setLoading(true);
+    const success = await login(form.email, form.password);
+    setLoading(false);
+    if (success) {
+      toast.success("Logged in!");
+      navigate(state?.from?.pathname || "/", { replace: true });
+    } else {
+      setError("Invalid credentials");
     }
-  }
+  };
 
   return (
     <div className="auth-page">
       <h1>Login</h1>
+      {error && <p className="error">{error}</p>}
       <form onSubmit={onSubmit}>
-        {err && <p className="error">{err}</p>}
         <label>
-          Email:
-          <input name="email" type="email" onChange={onChange} required />
+          Email
+          <input
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={onChange}
+            required
+            disabled={loading}
+          />
         </label>
         <label>
-          Password:
-          <input name="password" type="password" onChange={onChange} required />
+          Password
+          <input
+            name="password"
+            type="password"
+            value={form.password}
+            onChange={onChange}
+            required
+            disabled={loading}
+          />
         </label>
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in…" : "Login"}
+        </button>
       </form>
       <p>
         No account? <Link to="/register">Register here</Link>.
@@ -105,5 +128,4 @@ function Login() {
   );
 }
 
-export default Login;
 

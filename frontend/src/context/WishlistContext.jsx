@@ -3,37 +3,37 @@ import React, {
   useState,
   useEffect,
   useCallback,
-  useMemo
+  useMemo,
+  useContext
 } from "react";
 import api from "../api.js";
-import { useAuth } from "./AuthContext.jsx";   // ← use the custom hook
+import { useAuth } from "./AuthContext.jsx";
 
-export const CartContext = createContext({
+export const WishlistContext = createContext({
   items: [],
   loading: false,
   error: null,
-  addToCart: async () => {},
-  removeFromCart: async () => {},
-  clearCart: async () => {},
-  cartCount: 0,
-  totalPrice: 0
+  addToWishlist: async () => {},
+  removeFromWishlist: async () => {},
+  clearWishlist: async () => {},
+  wishlistCount: 0,
 });
 
-export function CartProvider({ children }) {
-  const { user } = useAuth();                 // ← get user from useAuth
+export function WishlistProvider({ children }) {
+  const { user } =  useAuth();
   const [items, setItems]     = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState(null);
 
-  // fetchCart when user changes
-  const fetchCart = useCallback(async () => {
+  // 1) Fetch wishlist when user logs in or changes
+  const fetchWishlist = useCallback(async () => {
     if (!user) {
       setItems([]);
       return;
     }
     setLoading(true);
     try {
-      const { data } = await api.get("/cart");
+      const { data } = await api.get("/wishlist");
       setItems(data);
       setError(null);
     } catch (err) {
@@ -44,14 +44,15 @@ export function CartProvider({ children }) {
   }, [user]);
 
   useEffect(() => {
-    fetchCart();
-  }, [fetchCart]);
+    fetchWishlist();
+  }, [fetchWishlist]);
 
-  const addToCart = useCallback(
-    async (productId) => {
+  // 2) Add an item
+  const addToWishlist = useCallback(
+    async (listingId) => {
       setLoading(true);
       try {
-        const { data } = await api.post("/cart", { productId });
+        const { data } = await api.post("/wishlist", { listingId });
         setItems(data);
         setError(null);
       } catch (err) {
@@ -63,12 +64,13 @@ export function CartProvider({ children }) {
     []
   );
 
-  const removeFromCart = useCallback(
-    async (productId) => {
+  // 3) Remove an item
+  const removeFromWishlist = useCallback(
+    async (listingId) => {
       setLoading(true);
       try {
-        const { data } = await api.delete(`/cart/${productId}`);
-        setItems(data);
+        await api.delete(`/wishlist/${listingId}`);
+        setItems((prev) => prev.filter((i) => i.listingId !== listingId));
         setError(null);
       } catch (err) {
         setError(err.response?.data?.error || err.message);
@@ -79,10 +81,13 @@ export function CartProvider({ children }) {
     []
   );
 
-  const clearCart = useCallback(async () => {
+  // 4) Clear all (bulk remove)
+  const clearWishlist = useCallback(async () => {
     setLoading(true);
     try {
-      await Promise.all(items.map((i) => api.delete(`/cart/${i.productId}`)));
+      await Promise.all(
+        items.map((i) => api.delete(`/wishlist/${i.listingId}`))
+      );
       setItems([]);
       setError(null);
     } catch (err) {
@@ -92,27 +97,22 @@ export function CartProvider({ children }) {
     }
   }, [items]);
 
-  const cartCount = useMemo(() => items.length, [items]);
-  const totalPrice = useMemo(
-    () =>
-      items.reduce((sum, i) => sum + parseFloat(i.Listing.price || 0), 0),
-    [items]
-  );
+  // 5) Computed count
+  const wishlistCount = useMemo(() => items.length, [items]);
 
   return (
-    <CartContext.Provider
+    <WishlistContext.Provider
       value={{
         items,
         loading,
         error,
-        addToCart,
-        removeFromCart,
-        clearCart,
-        cartCount,
-        totalPrice
+        addToWishlist,
+        removeFromWishlist,
+        clearWishlist,
+        wishlistCount,
       }}
     >
       {children}
-    </CartContext.Provider>
+    </WishlistContext.Provider>
   );
 }

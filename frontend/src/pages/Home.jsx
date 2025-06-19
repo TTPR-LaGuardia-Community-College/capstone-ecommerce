@@ -40,26 +40,46 @@
 
 // export default Home;
 
+
+// src/pages/Home.jsx
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../api.js";
 import ProductCard from "../components/ProductCard.jsx";
+import "./Home.css";
 
-function Home() {
-  const [featured, setFeatured] = useState([]);
+export default function Home() {
+  const [featured, setFeatured] = useState([]);  
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState("");
 
   useEffect(() => {
-    async function loadFeatured() {
+    (async () => {
+      setLoading(true);
+      setError("");
+
       try {
-        // e.g. your backend can return latest 5
-        const res = await api.get("/products?limit=5");
-        setFeatured(res.data);
+        // If your backend supports ?limit=5, great — use it:
+        const res = await api.get("/listings?limit=5");
+        // Otherwise it may return { data: [...], meta: {...} }
+        const list = Array.isArray(res.data)
+          ? res.data
+          : Array.isArray(res.data.data)
+            ? res.data.data
+            : [];
+
+        setFeatured(list);
       } catch (err) {
         console.error("Failed to fetch featured", err);
+        setError("Failed to load featured listings");
+      } finally {
+        setLoading(false);
       }
-    }
-    loadFeatured();
+    })();
   }, []);
+
+  if (loading) return <p>Loading featured…</p>;
+  if (error)   return <p className="error">{error}</p>;
 
   return (
     <div className="home-container">
@@ -67,11 +87,15 @@ function Home() {
       <p>A safe space for students to buy and sell on campus.</p>
 
       <h2>Featured Listings</h2>
-      <div className="products-grid">
-        {featured.map((p) => (
-          <ProductCard key={p.id} product={p} />
-        ))}
-      </div>
+      {featured.length === 0 ? (
+        <p>No featured listings available.</p>
+      ) : (
+        <div className="products-grid">
+          {featured.map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
+        </div>
+      )}
 
       <Link to="/products">
         <button className="browse-btn">Browse All Listings</button>
@@ -80,5 +104,4 @@ function Home() {
   );
 }
 
-export default Home;
 

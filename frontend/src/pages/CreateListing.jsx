@@ -78,73 +78,113 @@
 
 // export default CreateListing;
 
+
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api.js";
-import { AuthContext } from "../context/AuthContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
+import { toast } from "react-toastify";
+import "./CreateListing.css";
 
-function CreateListing() {
-  const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
-  const [form, setForm] = useState({
-    title: "",
-    description: "",
-    price: "",
-    category: "",
-    imageUrl: ""
-  });
+export default function CreateListing() {
+  const { user }   = useAuth();
+  const nav        = useNavigate();
+  const [form, setForm]     = useState({ title:"",desc:"",price:"",cat:"",imageUrl:"" });
+  const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState("");
 
-  function onChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
+  if (!user) return <p>Please <Link to="/login">login</Link> to post a listing.</p>;
 
-  async function onSubmit(e) {
+  const onChange = (e) => {
+    setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+  };
+
+  const onSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const payload = { ...form, price: parseFloat(form.price) };
-      const res = await api.post("/products", payload);
-      navigate(`/products/${res.data.id}`);
-    } catch (err) {
-      console.error("Failed to create listing", err);
+    setError("");
+    if (form.title.length < 3) {
+      return setError("Title must be at least 3 characters.");
     }
-  }
-
-  if (!user) return <p>Please login to create listings.</p>;
+    setLoading(true);
+    try {
+      const payload = {
+        title:       form.title,
+        description: form.desc,
+        price:       parseFloat(form.price),
+        category:    form.cat,
+        imageUrl:    form.imageUrl || null,
+      };
+      const res = await api.post("/listings", payload);
+      toast.success("Listing created!");
+      nav(`/products/${res.data.id}`);
+    } catch (err) {
+      setError(err.response?.data?.error || "Failed to create");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="create-listing">
       <h1>Create a New Listing</h1>
+      {error && <p className="error">{error}</p>}
       <form onSubmit={onSubmit}>
         <label>
-          Title:
-          <input name="title" required onChange={onChange} />
+          Title
+          <input
+            name="title"
+            value={form.title}
+            onChange={onChange}
+            required
+            disabled={loading}
+          />
         </label>
         <label>
-          Description:
-          <textarea name="description" required onChange={onChange} />
+          Description
+          <textarea
+            name="desc"
+            value={form.desc}
+            onChange={onChange}
+            required
+            disabled={loading}
+          />
         </label>
         <label>
-          Price:
+          Price
           <input
             name="price"
             type="number"
             step="0.01"
-            required
+            value={form.price}
             onChange={onChange}
+            required
+            disabled={loading}
           />
         </label>
         <label>
-          Category:
-          <input name="category" required onChange={onChange} />
+          Category
+          <input
+            name="cat"
+            value={form.cat}
+            onChange={onChange}
+            required
+            disabled={loading}
+          />
         </label>
         <label>
-          Image URL:
-          <input name="imageUrl" onChange={onChange} />
+          Image URL
+          <input
+            name="imageUrl"
+            value={form.imageUrl}
+            onChange={onChange}
+            disabled={loading}
+          />
         </label>
-        <button type="submit">Post Listing</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Posting…" : "Post Listing"}
+        </button>
       </form>
     </div>
   );
 }
 
-export default CreateListing;

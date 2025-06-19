@@ -91,11 +91,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api.js";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext.jsx";
 import "./Auth.css";
 
 export default function AdminLogin() {
-  const { setUser } = useAuth();
+  const { login } = useAuth(); 
   const nav = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
@@ -109,8 +109,8 @@ export default function AdminLogin() {
       const { data } = await api.post("/admin/login", form);
       localStorage.setItem("token", data.token);
       // decode user from token or fetch /auth/me
-      setUser({ role: "admin", token: data.token });
-      nav("/admin");
+      const ok = await login(form.email, form.password);
+      if (ok) navigate("/admin");
     } catch (err) {
       setError(err.response?.data?.error || "Login failed");
     } finally {

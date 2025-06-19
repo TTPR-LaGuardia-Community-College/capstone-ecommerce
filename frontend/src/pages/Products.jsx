@@ -144,22 +144,30 @@
 
 // export default Products;
 
+
 import React, { useState, useEffect } from "react";
 import api from "../api.js";
 import SearchBar from "../components/SearchBar.jsx";
 import ProductCard from "../components/ProductCard.jsx";
+import "./Products.css";
 
-function Products() {
+export default function Products() {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState("");
 
-  async function loadProducts(q = "") {
+  const loadProducts = async (q = "") => {
+    setLoading(true);
+    setError("");
     try {
-      const res = await api.get("/products" + (q ? `?q=${q}` : ""));
-      setProducts(res.data);
-    } catch (err) {
-      console.error("Error loading products", err);
+      const res = await api.get(`/listings${q ? `?search=${q}` : ""}`);
+      setProducts(res.data.data || res.data);
+    } catch {
+      setError("Error loading products");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     loadProducts();
@@ -169,13 +177,17 @@ function Products() {
     <div className="products-page">
       <h1>All Listings</h1>
       <SearchBar onSearch={loadProducts} />
-      <div className="products-grid">
-        {products.map((p) => (
-          <ProductCard key={p.id} product={p} />
-        ))}
-      </div>
+      {error && <p className="error">{error}</p>}
+      {loading ? (
+        <p>Loading…</p>
+      ) : (
+        <div className="products-grid">
+          {products.map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
-export default Products;

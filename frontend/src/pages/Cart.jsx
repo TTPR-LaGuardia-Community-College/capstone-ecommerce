@@ -118,36 +118,66 @@
 // };
 
 // export default Cart;
-import React, { useContext } from "react";
+
+
+import React, { useContext, useMemo } from "react";
 import { CartContext } from "../context/CartContext.jsx";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import "./Cart.css";
 
-function Cart() {
-  const { items, removeFromCart } = useContext(CartContext);
+export default function Cart() {
+  const {
+    items,
+    loading,
+    error,
+    removeFromCart,
+    clearCart,
+    cartCount,
+    totalPrice
+  } = useContext(CartContext);
 
-  if (items.length === 0) return <p>Your cart is empty.</p>;
+  const onRemove = async (id) => {
+    try {
+      await removeFromCart(id);
+      toast.info("Removed from cart");
+    } catch {
+      toast.error("Failed to remove");
+    }
+  };
 
-  const total = items.reduce((sum, i) => sum + i.Product.price, 0);
+  if (loading) return <p>Loading cart…</p>;
+  if (error)   return <p className="error">{error}</p>;
+  if (!items.length)
+    return <p>Your cart is empty. <Link to="/products">Browse products.</Link></p>;
 
   return (
     <div className="cart-page">
-      <h1>Your Cart</h1>
-      <ul>
+      <h1>Your Cart ({cartCount})</h1>
+      <ul className="cart-list">
         {items.map((i) => (
           <li key={i.productId}>
             <Link to={`/products/${i.productId}`}>
-              {i.Product.title}
-            </Link>{" "}
-            — ${i.Product.price.toFixed(2)}{" "}
-            <button onClick={() => removeFromCart(i.productId)}>
+              {i.Listing.title}
+            </Link>
+            <span>${parseFloat(i.Listing.price).toFixed(2)}</span>
+            <button onClick={() => onRemove(i.productId)}>
               Remove
             </button>
           </li>
         ))}
       </ul>
-      <h2>Total: ${total.toFixed(2)}</h2>
+
+      <div className="cart-footer">
+        <strong>Total:</strong> ${totalPrice.toFixed(2)}
+        <button className="danger" onClick={clearCart}>
+          Clear Cart
+        </button>
+        <Link to="/checkout">
+          <button>Proceed to Checkout</button>
+        </Link>
+      </div>
     </div>
   );
 }
 
-export default Cart;
