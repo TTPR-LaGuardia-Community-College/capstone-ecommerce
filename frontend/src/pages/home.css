@@ -1,0 +1,88 @@
+/* ─── home.css ───────────────────────────────────────────────── */
+
+/* 1) Container */
+.home-container {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  padding: 3rem 1rem;
+  text-align: center;
+  max-width: 1000px;
+  margin: 4rem auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(7, 76, 166, 0.08);
+}
+
+/* 2) Hero heading in red + serif */
+.home-container h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #e63946;
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 0.5rem;
+}
+
+/* 3) Hero subtitle */
+.home-container p {
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: #555;
+}
+
+/* 4) Browse button in red */
+.browse-btn {
+  margin-top: 1.2rem;
+  padding: 0.8rem 1.6rem;
+  font-size: 1rem;
+  background-color: #e63946;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+.browse-btn:hover {
+  background-color: #a8323a;
+}
+
+/* 5) Features */
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+.feature-card {
+  background: white;
+  padding: 1.2rem;
+  border-radius: 10px;
+  width: 220px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+  text-align: center;
+}
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+
+/* 5a) Card icons in red */
+.feature-icon {
+  font-size: 2rem;
+  color: #e63946;
+}
+
+/* 5b) Card titles in red */
+.feature-card h3 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin: 0.5rem 0;
+  color: #e63946;
+}
+
+/* 5c) Card text */
+.feature-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #444;
+}

@@ -1,0 +1,18 @@
+const path = require("path");
+require("dotenv").config({ 
+  path: path.resolve(__dirname, "backend/.env") 
+});
+
+module.exports = {
+  // point to your JSON config
+  "config": path.resolve(__dirname, "backend/src/db/config/config.json"),
+
+  // migrations live here
+  "migrations-path": path.resolve(__dirname, "backend/src/db/migrations"),
+
+  // models live here
+  "models-path": path.resolve(__dirname, "backend/src/db/models"),
+
+  // (if you ever have seeders)
+  "seeders-path": path.resolve(__dirname, "backend/src/db/seeders"),
+};
