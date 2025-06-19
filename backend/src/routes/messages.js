@@ -1,5 +1,3 @@
-// src/routes/messages.js
-
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
@@ -23,9 +21,7 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-// -----------------------
-// GET ALL RECEIVED MESSAGES (INBOX)
-// -----------------------
+
 router.get("/inbox", authenticate, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -43,9 +39,7 @@ router.get("/inbox", authenticate, async (req, res) => {
   }
 });
 
-// -----------------------
-// GET ALL SENT MESSAGES
-// -----------------------
+
 router.get("/sent", authenticate, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -63,21 +57,17 @@ router.get("/sent", authenticate, async (req, res) => {
   }
 });
 
-// -----------------------
-// SEND A NEW MESSAGE
-// -----------------------
 router.post("/", authenticate, async (req, res) => {
   try {
     const senderId = req.user.id;
     const { receiverId, content } = req.body;
 
-    // Check that receiver exists
     const receiver = await User.findByPk(receiverId);
     if (!receiver) {
       return res.status(404).json({ error: "Receiver not found" });
     }
 
-    // Create the message
+
     const newMessage = await Message.create({
       senderId,
       receiverId,

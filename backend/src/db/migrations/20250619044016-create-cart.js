@@ -3,7 +3,6 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Carts', {
-      // if you want an auto-incrementing PK:
       // id: {
       //   type: Sequelize.INTEGER,
       //   primaryKey: true,
@@ -15,7 +14,7 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: 'Users',   // name of your users table
+          model: 'Users',
           key: 'id'
         },
         onDelete: 'CASCADE',
@@ -25,7 +24,7 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: 'Listings', // or 'Products', whatever your table is called
+          model: 'Listings',
           key: 'id'
         },
         onDelete: 'CASCADE',
@@ -37,8 +36,7 @@ module.exports = {
         defaultValue: Sequelize.fn('NOW')
       }
     });
-
-    // Composite PK (optional)
+    
     await queryInterface.addConstraint('Carts', {
       fields: ['userId','productId'],
       type: 'primary key',

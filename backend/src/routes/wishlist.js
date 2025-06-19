@@ -1,5 +1,3 @@
-// src/routes/wishlist.js
-
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
@@ -8,7 +6,6 @@ const { Wishlist, Listing, User } = require("../db/models");
 require("dotenv").config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// Re‐use the same `authenticate` middleware
 const authenticate = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -25,14 +22,10 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-// -----------------------
-// GET ALL WISHLISTED LISTINGS FOR CURRENT USER
-// -----------------------
 router.get("/", authenticate, async (req, res) => {
   try {
     const userId = req.user.id;
 
-    // Find all Wishlist entries for this user, include the Listing record
     const items = await Wishlist.findAll({
       where: { userId },
       include: [
@@ -58,21 +51,16 @@ router.get("/", authenticate, async (req, res) => {
   }
 });
 
-// -----------------------
-// ADD A LISTING TO WISHLIST (CURRENT USER)
-// -----------------------
 router.post("/", authenticate, async (req, res) => {
   try {
     const userId = req.user.id;
     const { listingId } = req.body;
 
-    // Check that the listing exists
     const listing = await Listing.findByPk(listingId);
     if (!listing) {
       return res.status(404).json({ error: "Listing not found" });
     }
 
-    // Check if already wishlisted
     const existing = await Wishlist.findOne({ where: { userId, listingId } });
     if (existing) {
       return res.status(400).json({ error: "Already in wishlist" });
@@ -86,9 +74,6 @@ router.post("/", authenticate, async (req, res) => {
   }
 });
 
-// -----------------------
-// REMOVE A LISTING FROM WISHLIST
-// -----------------------
 router.delete("/:listingId", authenticate, async (req, res) => {
   try {
     const userId = req.user.id;

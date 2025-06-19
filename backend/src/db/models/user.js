@@ -1,5 +1,3 @@
-// src/db/models/user.js
-
 "use strict";
 const { Model } = require("sequelize");
 

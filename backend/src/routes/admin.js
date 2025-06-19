@@ -1,5 +1,3 @@
-// src/routes/admin.js
-
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
@@ -30,9 +28,8 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
-// -----------------------
 // BAN (DELETE) A USER
-// -----------------------
+
 router.delete("/user/:id", authenticate, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -41,8 +38,6 @@ router.delete("/user/:id", authenticate, requireAdmin, async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // You might want to first revoke all refresh tokens, etc. 
-    // For simplicity, we do a hard delete:
     await userToBan.destroy();
     return res.json({ message: "User banned (deleted)" });
   } catch (err) {
@@ -51,9 +46,8 @@ router.delete("/user/:id", authenticate, requireAdmin, async (req, res) => {
   }
 });
 
-// -----------------------
 // FORCE DELETE ANY LISTING
-// -----------------------
+
 router.delete("/listing/:id", authenticate, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;

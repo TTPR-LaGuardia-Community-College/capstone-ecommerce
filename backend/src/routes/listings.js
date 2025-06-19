@@ -8,9 +8,8 @@ require("dotenv").config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// -----------------------
-// MIDDLEWARE TO PROTECT ROUTES
-// -----------------------
+// MIDDLEWARE 
+
 const authenticate = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -27,12 +26,8 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-// -----------------------
-// GET ALL LISTINGS
-// -----------------------
 router.get("/", async (req, res) => {
   try {
-    // Include owner info (username, email) if you want
     const allListings = await Listing.findAll({
       order: [["createdAt", "DESC"]],
       include: [
@@ -50,9 +45,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// -----------------------
-// GET SINGLE LISTING BY ID
-// -----------------------
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -75,13 +67,9 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// -----------------------
-// CREATE NEW LISTING
-// -----------------------
 router.post("/", authenticate, async (req, res) => {
   try {
     const { title, description, price, category, imageUrl } = req.body;
-    // userId comes from the decoded JWT
     const userId = req.user.id;
 
     const newListing = await Listing.create({
@@ -100,9 +88,6 @@ router.post("/", authenticate, async (req, res) => {
   }
 });
 
-// -----------------------
-// UPDATE A LISTING (OWNER OR ADMIN ONLY)
-// -----------------------
 router.put("/:id", authenticate, async (req, res) => {
   try {
     const { id } = req.params;
@@ -111,12 +96,10 @@ router.put("/:id", authenticate, async (req, res) => {
       return res.status(404).json({ error: "Listing not found" });
     }
 
-    // Only the owner (or an admin) can update
     if (listingToUpdate.userId !== req.user.id && req.user.role !== "admin") {
       return res.status(403).json({ error: "Not authorized to update this listing" });
     }
 
-    // Updatable fields
     const { title, description, price, category, imageUrl } = req.body;
 
     listingToUpdate.title = title !== undefined ? title : listingToUpdate.title;
@@ -135,9 +118,6 @@ router.put("/:id", authenticate, async (req, res) => {
   }
 });
 
-// -----------------------
-// DELETE A LISTING (OWNER OR ADMIN ONLY)
-// -----------------------
 router.delete("/:id", authenticate, async (req, res) => {
   try {
     const { id } = req.params;
@@ -146,7 +126,6 @@ router.delete("/:id", authenticate, async (req, res) => {
       return res.status(404).json({ error: "Listing not found" });
     }
 
-    // Only owner or admin can delete
     if (listingToDelete.userId !== req.user.id && req.user.role !== "admin") {
       return res.status(403).json({ error: "Not authorized to delete this listing" });
     }
