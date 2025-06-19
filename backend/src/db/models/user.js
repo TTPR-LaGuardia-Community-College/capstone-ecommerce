@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Message, { foreignKey: "receiverId", as: "receivedMessages" });
       
       User.hasMany(models.Wishlist, { foreignKey: "userId", as: "wishlistItems" });
+      User.hasMany(models.Cart, { foreignKey: "userId", as: "cartItems", onDelete: "CASCADE" });
     }
   }
 

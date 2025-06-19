@@ -26,7 +26,7 @@ if (config.use_env_variable) {
   });
 }
 
-const MODELS_DIR = path.join(__dirname, "models");
+const MODELS_DIR = __dirname;
 
 fs.readdirSync(MODELS_DIR)
   .filter((file) => {
