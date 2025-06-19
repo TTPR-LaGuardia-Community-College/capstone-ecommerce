@@ -1,3 +1,4 @@
+/* 1) Page wrapper */
 .products-page {
   padding: 2rem 1rem;
   font-family: 'Segoe UI', sans-serif;
@@ -5,19 +6,22 @@
   margin: auto;
 }
 
+/* 2) Page title “Products” in red */
 .products-page h2 {
   text-align: center;
   font-size: 2rem;
   margin-bottom: 1rem;
-  color: #2e8b57;
+  color: #e63946;
 }
 
+/* 3) Grid layout */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 2rem;
 }
 
+/* 4) Card base */
 .product-card {
   border: 1px solid #e0e0e0;
   border-radius: 10px;
@@ -27,11 +31,11 @@
   transition: transform 0.2s ease;
   text-align: center;
 }
-
 .product-card:hover {
   transform: scale(1.03);
 }
 
+/* 5) Image */
 .product-card img {
   width: 100%;
   height: 160px;
@@ -39,25 +43,30 @@
   border-radius: 6px;
 }
 
+/* 6) Product heading in red */
 .product-card h4 {
   margin: 0.8rem 0 0.3rem;
   font-size: 1.2rem;
+  color: #e63946;
 }
 
+/* 7) Description */
 .product-card p {
   margin: 0.2rem 0;
   font-size: 0.95rem;
 }
 
+/* 8) Rating (keep gold) */
 .product-card .rating {
   font-size: 1.1rem;
   color: gold;
 }
 
+/* 9) Add-to-Cart button in red */
 .product-card button {
   margin-top: 0.5rem;
   padding: 0.6rem 1rem;
-  background-color: #2e8b57;
+  background-color: #e63946;
   color: white;
   border: none;
   border-radius: 6px;
@@ -65,18 +74,19 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
-
 .product-card button:hover {
-  background-color: #246a44;
+  background-color: #a8323a;
 }
 
+/* 10) Icon/Span hover effect */
 .product-card span {
   transition: transform 0.2s ease;
 }
-
 .product-card span:hover {
   transform: scale(1.2);
 }
+
+/* 11) Subtle underline on hover */
 .product-card h4:hover,
 .product-card img:hover,
 .product-card p:hover {

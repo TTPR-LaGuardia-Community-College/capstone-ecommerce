@@ -1,14 +1,6 @@
-/* 0) IMPORT GOOGLE FONTS */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700&display=swap');
+/* ─── home.css ───────────────────────────────────────────────── */
 
-/* 1) BASE FONT (applies to entire page) */
-body {
-  font-family: 'Poppins', sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
-/* 2) CONTAINER STYLING */
+/* 1) Container styling (unchanged) */
 .home-container {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(8px);
@@ -20,27 +12,27 @@ body {
   box-shadow: 0 8px 24px rgba(7, 76, 166, 0.08);
 }
 
-/* 3) HERO TEXT */
+/* 2) Hero text title in red */
 .home-container h1 {
   font-size: 3rem;
   font-weight: 700;
-  color: #e63946;                          /* true-red */
-  font-family: 'Playfair Display', serif;  /* elegant serif */
+  color: #e63946;                           /* ← turned red */
   margin-bottom: 0.5rem;
 }
 
+/* 3) Hero subtitle (keep grey) */
 .home-container p {
   font-size: 1.1rem;
   font-weight: 400;
   color: #555;
 }
 
-/* 4) BROWSE BUTTON */
+/* 4) Browse Listings button in red */
 .browse-btn {
   margin-top: 1.2rem;
   padding: 0.8rem 1.6rem;
   font-size: 1rem;
-  background-color: #2e8b57;
+  background-color: #e63946;                /* ← red background */
   color: white;
   border: none;
   border-radius: 8px;
@@ -48,12 +40,11 @@ body {
   font-weight: 500;
   transition: background-color 0.2s ease;
 }
-
 .browse-btn:hover {
-  background-color: #246a44;
+  background-color: #a8323a;                /* darker red on hover */
 }
 
-/* 5) FEATURE CARDS */
+/* 5) Feature cards */
 .features {
   display: flex;
   flex-wrap: wrap;
@@ -61,7 +52,6 @@ body {
   gap: 1.5rem;
   margin-top: 2.5rem;
 }
-
 .feature-card {
   background: white;
   padding: 1.2rem;
@@ -71,22 +61,27 @@ body {
   transition: transform 0.2s ease;
   text-align: center;
 }
-
 .feature-card:hover {
   transform: translateY(-5px);
 }
 
+/* 5a) Card icons in red */
+.feature-icon {
+  font-size: 2rem;
+  color: #e63946;                            /* ← red icons */
+}
+
+/* 5b) Card headings in red */
 .feature-card h3 {
   font-size: 1.2rem;
   font-weight: 500;
-  margin: 0.5rem 0;  /* fixed typo */
+  margin: 0.5rem 0;
+  color: #e63946;                            /* ← red text */
 }
 
+/* 5c) Card body copy (keep dark grey) */
 .feature-card p {
   margin: 0;
   font-size: 0.95rem;
   color: #444;
 }
-
-/* 6) FUTURE STYLES (e.g., Featured Items) */
-/* add below as needed */
