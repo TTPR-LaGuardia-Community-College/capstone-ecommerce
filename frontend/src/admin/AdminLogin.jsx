@@ -91,25 +91,30 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api.js";
+import { useAuth } from "../context/AuthContext";
+import "./Auth.css";
 
-function AdminLogin() {
+export default function AdminLogin() {
+  const { setUser } = useAuth();
   const nav = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
-  const [err, setErr] = useState("");
-
-  function onChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   async function onSubmit(e) {
     e.preventDefault();
+    setError("");
+    setLoading(true);
     try {
-      // you might have a separate /admin/login route
-      const res = await api.post("/admin/login", form);
-      localStorage.setItem("token", res.data.token);
+      const { data } = await api.post("/admin/login", form);
+      localStorage.setItem("token", data.token);
+      // decode user from token or fetch /auth/me
+      setUser({ role: "admin", token: data.token });
       nav("/admin");
-    } catch {
-      setErr("Admin login failed");
+    } catch (err) {
+      setError(err.response?.data?.error || "Login failed");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -117,17 +122,32 @@ function AdminLogin() {
     <div className="auth-page">
       <h1>Admin Login</h1>
       <form onSubmit={onSubmit}>
-        {err && <p className="error">{err}</p>}
-        <label>Email:
-          <input name="email" type="email" onChange={onChange} required/>
+        {error && <p className="error">{error}</p>}
+        <label>
+          Email
+          <input
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={e => setForm({ ...form, email: e.target.value })}
+            required
+          />
         </label>
-        <label>Password:
-          <input name="password" type="password" onChange={onChange} required/>
+        <label>
+          Password
+          <input
+            name="password"
+            type="password"
+            value={form.password}
+            onChange={e => setForm({ ...form, password: e.target.value })}
+            required
+          />
         </label>
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in…" : "Login"}
+        </button>
       </form>
     </div>
   );
 }
 
-export default AdminLogin;

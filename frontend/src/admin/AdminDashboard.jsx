@@ -183,20 +183,31 @@
 // export default AdminDashboard;
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import "./AdminDashboard.css";
 
-function AdminDashboard() {
+export default function AdminDashboard() {
+  const { logout } = useAuth();
+  const nav = useNavigate();
+
+  function onSignOut() {
+    logout();
+    nav("/admin/login");
+  }
+
   return (
     <div className="admin-dashboard">
-      <h1>Admin Dashboard</h1>
-      <ul>
-        <li><Link to="/admin/listings">Manage Listings</Link></li>
-        <li><Link to="/admin/users">Manage Users</Link></li>
-        {/* add other admin links */}
-      </ul>
+      <header>
+        <h1>Admin Dashboard</h1>
+        <button onClick={onSignOut}>Sign Out</button>
+      </header>
+      <nav>
+        <NavLink to="/admin/listings">Manage Listings</NavLink>
+        <NavLink to="/admin/users">Manage Users</NavLink>
+        {/* future: <NavLink to="/admin/analytics">Analytics</NavLink> */}
+      </nav>
     </div>
   );
 }
-
-export default AdminDashboard;
 

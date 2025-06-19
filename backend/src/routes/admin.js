@@ -1,10 +1,12 @@
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { User, Listing } = require("../db/models");
 
 require("dotenv").config();
 const JWT_SECRET = process.env.JWT_SECRET;
+const ADMIN_SECRET = process.env.ADMIN_SECRET;
 
 const authenticate = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -60,6 +62,39 @@ router.delete("/listing/:id", authenticate, requireAdmin, async (req, res) => {
     return res.json({ message: "Listing forcibly deleted" });
   } catch (err) {
     console.error("Error deleting listing (admin):", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// --- REGISTER NEW ADMIN ---
+router.post("/register", async (req, res) => {
+  try {
+    const { email, password, secret } = req.body;
+
+    if (secret !== ADMIN_SECRET) {
+      return res.status(403).json({ error: "Invalid secret code" });
+    }
+
+    const existing = await User.findOne({ where: { email } });
+    if (existing) {
+      return res.status(400).json({ error: "Email already in use" });
+    }
+
+    const hash = await bcrypt.hash(password, 10);
+    const admin = await User.create({
+      username: email,   
+      email,
+      password: hash,
+      role: "admin",
+    });
+
+    return res.status(201).json({
+      id:    admin.id,
+      email: admin.email,
+      role:  admin.role,
+    });
+  } catch (err) {
+    console.error("Error in /admin/register:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
