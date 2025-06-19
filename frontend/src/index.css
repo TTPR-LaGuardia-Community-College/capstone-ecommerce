@@ -1,53 +1,48 @@
-*{
+/* ─── index.css ───────────────────────────────────────────────── */
+
+/* 1) Google Font + box-sizing reset */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* 2) Global body (font + background) */
 body {
-  font-family: 'Inter', sans-serif;
-  background-color: #f9fafb;
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #f0f4f8 0%, #cfe8f7 100%);
   color: #1f2937;
   line-height: 1.6;
 }
 
+/* 3) Basic element resets */
 a {
   color: #3b82f6;
   text-decoration: none;
 }
-
 a:hover {
   text-decoration: underline;
 }
-
-button {
+button,
+input, textarea, select {
   font-family: inherit;
-  cursor: pointer;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-input, textarea, select, button {
   font-size: 1rem;
-  padding: 0.5rem;
-  border-radius: 0.375rem;
-  border: 1px solid #d1d5db;
 }
-
-input:focus, textarea:focus, select:focus {
+input, textarea, select, button {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+}
+input:focus,
+textarea:focus,
+select:focus {
   outline: 2px solid #3b82f6;
 }
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
+img {
+  max-width: 100%;
+  display: block;
 }
+/* …any other globals… */
 
-.hidden {
-  display: none;
-}
