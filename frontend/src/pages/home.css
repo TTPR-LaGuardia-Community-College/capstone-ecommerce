@@ -1,4 +1,14 @@
+/* 0) IMPORT GOOGLE FONTS */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700&display=swap');
 
+/* 1) BASE FONT (applies to entire page) */
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* 2) CONTAINER STYLING */
 .home-container {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(8px);
@@ -10,20 +20,22 @@
   box-shadow: 0 8px 24px rgba(7, 76, 166, 0.08);
 }
 
-/* 2) Hero text */
+/* 3) HERO TEXT */
 .home-container h1 {
   font-size: 3rem;
   font-weight: 700;
-  color: #2e8b57;
+  color: #e63946;                          /* true-red */
+  font-family: 'Playfair Display', serif;  /* elegant serif */
   margin-bottom: 0.5rem;
 }
+
 .home-container p {
   font-size: 1.1rem;
   font-weight: 400;
   color: #555;
 }
 
-/* 3) Browse button */
+/* 4) BROWSE BUTTON */
 .browse-btn {
   margin-top: 1.2rem;
   padding: 0.8rem 1.6rem;
@@ -36,11 +48,12 @@
   font-weight: 500;
   transition: background-color 0.2s ease;
 }
+
 .browse-btn:hover {
   background-color: #246a44;
 }
 
-/* 4) Feature cards */
+/* 5) FEATURE CARDS */
 .features {
   display: flex;
   flex-wrap: wrap;
@@ -48,6 +61,7 @@
   gap: 1.5rem;
   margin-top: 2.5rem;
 }
+
 .feature-card {
   background: white;
   padding: 1.2rem;
@@ -57,20 +71,22 @@
   transition: transform 0.2s ease;
   text-align: center;
 }
+
 .feature-card:hover {
   transform: translateY(-5px);
 }
-/* fix the margin-bottom typo here */
+
 .feature-card h3 {
   font-size: 1.2rem;
   font-weight: 500;
-  margin: 0.5rem 0;  /* <-- correct syntax */
+  margin: 0.5rem 0;  /* fixed typo */
 }
+
 .feature-card p {
   margin: 0;
   font-size: 0.95rem;
   color: #444;
 }
 
-/* 5) (if you add Featured Items later, its CSS goes below) */
-
+/* 6) FUTURE STYLES (e.g., Featured Items) */
+/* add below as needed */
