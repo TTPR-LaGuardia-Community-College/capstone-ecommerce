@@ -77,3 +77,22 @@ img {
   margin: 0 auto;
   padding: 2rem;
 }
+
+/* ─── OVERRIDE: Make nav “active” links red, too ───────────────────────────────── */
+.navbar a,
+.navbar a.active {
+  color: #e63946 !important;
+}
+.navbar a:hover,
+.navbar a.active:hover {
+  color: #a8323a !important;
+}
+
+/* ─── OVERRIDE: Turn count badges red ───────────────────────────────────────────── */
+.badge,
+.MuiBadge-badge,      /* if you’re using MUI */
+.cart-count,          /* or any custom class you gave the little bubble */
+.liked-count {        /* adjust to match your markup */
+  background-color: #e63946 !important;
+  color: #fff !important;
+}
