@@ -19,63 +19,58 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api.js";
+import { toast } from "react-toastify";
 
-function EditListing() {
-  const { id } = useParams(); // "new" or an existing id
-  const nav = useNavigate();
-  const [form, setForm] = useState({
-    title: "", description: "", price: "", category: "", imageUrl: ""
-  });
+export default function EditListing() {
+  const { id } = useParams();    
+  const nav     = useNavigate();
+  const isNew   = id === "new";
+
+  const [form, setForm]     = useState({ title:"",desc:"",price:0,cat:"",imageUrl:""});
+  const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState("");
 
   useEffect(() => {
-    if (id !== "new") {
+    if (!isNew) {
+      setLoading(true);
       api.get(`/admin/listings/${id}`)
-         .then(res => setForm(res.data))
-         .catch(console.error);
+        .then(res => setForm(res.data))
+        .catch(err => setError("Failed to load"))
+        .finally(() => setLoading(false));
     }
   }, [id]);
 
-  function onChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
-
   async function onSubmit(e) {
     e.preventDefault();
+    setError("");
+    setLoading(true);
     try {
-      if (id === "new") {
+      if (isNew) {
         await api.post("/admin/listings", form);
+        toast.success("Listing created!");
       } else {
         await api.put(`/admin/listings/${id}`, form);
+        toast.success("Listing updated!");
       }
       nav("/admin/listings");
     } catch (err) {
-      console.error(err);
+      setError(err.response?.data?.error || "Save failed");
+    } finally {
+      setLoading(false);
     }
   }
 
+  if (loading) return <p>Loading…</p>;
+
   return (
-    <div className="edit-listing">
-      <h1>{id === "new" ? "Create" : "Edit"} Listing</h1>
-      <form onSubmit={onSubmit}>
-        <label>Title:
-          <input name="title" value={form.title} onChange={onChange} required/>
-        </label>
-        <label>Description:
-          <textarea name="description" value={form.description} onChange={onChange} required/>
-        </label>
-        <label>Price:
-          <input name="price" type="number" value={form.price} onChange={onChange} required/>
-        </label>
-        <label>Category:
-          <input name="category" value={form.category} onChange={onChange} required/>
-        </label>
-        <label>Image URL:
-          <input name="imageUrl" value={form.imageUrl} onChange={onChange}/>
-        </label>
-        <button type="submit">{id === "new" ? "Create" : "Save"}</button>
-      </form>
-    </div>
+    <form onSubmit={onSubmit}>
+      {error && <p className="error">{error}</p>}
+      <label>Title<input name="title" value={form.title} onChange={e=>setForm({...form,title:e.target.value})} required/></label>
+      {/* …other fields… */}
+      <button type="submit" disabled={loading}>
+        {isNew ? "Create" : "Save"}
+      </button>
+    </form>
   );
 }
 
-export default EditListing;

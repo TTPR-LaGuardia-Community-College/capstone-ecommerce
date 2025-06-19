@@ -97,36 +97,61 @@
 // export default AdminForgotPassword;
 import React, { useState } from "react";
 import api from "../api.js";
+import { toast } from "react-toastify";
+import "./Auth.css";
 
 function AdminForgotPassword() {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError]   = useState("");
 
   async function onSubmit(e) {
     e.preventDefault();
+    setError("");
+    setLoading(true);
+
     try {
       await api.post("/admin/forgot-password", { email });
       setSent(true);
+      toast.success("If that email exists, you’ll get reset instructions shortly.");
     } catch (err) {
-      console.error(err);
+      setError(err.response?.data?.error || "Failed to send reset link");
+    } finally {
+      setLoading(false);
     }
   }
 
-  if (sent) return <p>Check your email for reset instructions.</p>;
+  if (sent) {
+    return (
+      <div className="auth-page">
+        <p>Check your email for reset instructions.</p>
+        <button onClick={() => setSent(false)}>Send Again</button>
+      </div>
+    );
+  }
 
   return (
     <div className="auth-page">
       <h1>Reset Admin Password</h1>
+
+      {error && <p className="error">{error}</p>}
+
       <form onSubmit={onSubmit}>
-        <label>Email:
+        <label>
+          Email:
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            disabled={loading}
           />
         </label>
-        <button type="submit">Send Reset Link</button>
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Sending…" : "Send Reset Link"}
+        </button>
       </form>
     </div>
   );
