@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -5,72 +6,140 @@ import { useAuth } from '../context/AuthContext';
 const Login = () => {
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
+=======
+// import React, { useState } from "react";
+// import { useNavigate, Link } from "react-router-dom";
+
+// function Login() {
+//   const navigate = useNavigate();
+//   const [form, setForm] = useState({ email: "", password: "" });
+
+//   function handleChange(e) {
+//     setForm({ ...form, [e.target.name]: e.target.value });
+//   }
+
+//   async function handleSubmit(e) {
+//     e.preventDefault();
+//     try {
+//       const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify(form),
+//       });
+//       const data = await res.json();
+//       localStorage.setItem("token", data.token);
+//       navigate("/");
+//     } catch (err) {
+//       console.error(err);
+//       alert("Login failed");
+//     }
+//   }
+
+//   return (
+//     <div style={{ padding: "1rem" }}>
+//       <h1>Login</h1>
+//       <form onSubmit={handleSubmit}>
+//         <label>
+//           Email:
+//           <br />
+//           <input name="email" type="email" onChange={handleChange} required />
+//         </label>
+//         <br />
+//         <label>
+//           Password:
+//           <br />
+//           <input
+//             name="password"
+//             type="password"
+//             onChange={handleChange}
+//             required
+//           />
+//         </label>
+//         <br />
+//         <br />
+//         <button type="submit">Login</button>
+//       </form>
+//       <p>
+//         No account? <Link to="/register">Register here</Link>.
+//       </p>
+//     </div>
+//   );
+// }
+
+// export default Login;
+
+
+import React, { useState, useContext } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx";
+import { toast } from "react-toastify";
+import "./Auth.css";
+
+export default function Login() {
+>>>>>>> 91490b1a7a46b94bc266ad91512ee02371cf6cb8
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const [form, setForm] = useState({ email:"", password:"" });
+  const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState("");
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const onChange = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
-  const handleSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-
-    if (
-      storedUser &&
-      form.username === storedUser.username &&
-      form.password === storedUser.password
-    ) {
-      login(form.username);
-      navigate('/create-listing');
+    setError("");
+    setLoading(true);
+    const success = await login(form.email, form.password);
+    setLoading(false);
+    if (success) {
+      toast.success("Logged in!");
+      navigate(state?.from?.pathname || "/", { replace: true });
     } else {
-      setError('Invalid username or password');
+      setError("Invalid credentials");
     }
   };
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '400px', margin: 'auto' }}>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={form.username}
-          onChange={handleChange}
-          style={{ width: '100%', padding: '0.5rem', marginBottom: '1rem' }}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          style={{ width: '100%', padding: '0.5rem', marginBottom: '1rem' }}
-          required
-        />
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button
-          type="submit"
-          style={{
-            width: '100%',
-            padding: '0.6rem',
-            backgroundColor: '#2e8b57',
-            color: 'white',
-            border: 'none'
-          }}
-        >
-          Log In
+    <div className="auth-page">
+      <h1>Login</h1>
+      {error && <p className="error">{error}</p>}
+      <form onSubmit={onSubmit}>
+        <label>
+          Email
+          <input
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={onChange}
+            required
+            disabled={loading}
+          />
+        </label>
+        <label>
+          Password
+          <input
+            name="password"
+            type="password"
+            value={form.password}
+            onChange={onChange}
+            required
+            disabled={loading}
+          />
+        </label>
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in…" : "Login"}
         </button>
       </form>
-
-      <p style={{ marginTop: '1rem' }}>
-        Not registered? <Link to="/signup">Sign up here</Link>
+      <p>
+        No account? <Link to="/register">Register here</Link>.
       </p>
     </div>
   );
-};
+}
 
+
+<<<<<<< HEAD
 export default Login;
+=======
+>>>>>>> 91490b1a7a46b94bc266ad91512ee02371cf6cb8

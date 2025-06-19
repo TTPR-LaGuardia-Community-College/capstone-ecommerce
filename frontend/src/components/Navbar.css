@@ -1,51 +1,74 @@
 /* src/components/Navbar.css */
-
 .navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background: #f9f9f9;
-  border-bottom: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  font-family: 'Segoe UI', sans-serif;
-}
-
-.logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #2e8b57;
-  text-decoration: none;
-}
-
-.nav-links {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.nav-item {
-  font-weight: 500;
-  color: #333;
-  text-decoration: none;
-  transition: color 0.2s ease;
+  background: #fff;
+  padding: 0.5rem 1rem;
+  gap: 1rem;
   position: relative;
 }
 
-.nav-item:hover,
-.nav-item.active {
-  color: #2e8b57;
+.nav__item {
+  position: relative;
+  text-decoration: none;
+  color: #333;
+  padding: 0.5rem;
+  cursor: pointer;
 }
 
+.nav__item:hover {
+  color: #007bff;
+}
+
+/* Dropdown container */
+.dropdown {
+  position: relative;
+}
+
+/* Hidden by default */
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem 0;
+  min-width: 160px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease;
+  z-index: 100;
+}
+
+/* Show on hover of the parent */
+.dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Individual dropdown links */
+.dropdown__link {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: #333;
+  text-decoration: none;
+}
+
+.dropdown__link:hover {
+  background: #f5f5f5;
+  color: #007bff;
+}
+
+/* Cart badge */
 .badge {
-  background: #2e8b57;
+  background: red;
   color: white;
-  font-size: 0.7rem;
-  padding: 2px 6px;
-  border-radius: 10px;
-  margin-left: 4px;
+  border-radius: 50%;
+  padding: 0 0.4rem;
+  font-size: 0.8rem;
+  margin-left: 0.2rem;
 }

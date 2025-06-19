@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       Listing.belongsTo(models.User, { foreignKey: "userId", as: "owner" });
 
       Listing.hasMany(models.Wishlist, { foreignKey: "listingId", as: "wishlistedBy" });
+      Listing.hasMany(models.Cart, { foreignKey: "listingId", as: "cartItems", onDelete: "CASCADE" });
     }
   }
 

@@ -22,11 +22,14 @@ if (config.use_env_variable) {
     port: config.port,
     dialect: "postgresql",
     dialectModule: pg,
+    dialectOptions: {
+      decimalNumbers: true,
+    },
     logging: env === "development" ? console.log : false, 
   });
 }
 
-const MODELS_DIR = path.join(__dirname, "models");
+const MODELS_DIR = __dirname;
 
 fs.readdirSync(MODELS_DIR)
   .filter((file) => {

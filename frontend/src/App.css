@@ -1,21 +1,220 @@
+/* ─── App.css ───────────────────────────────────────────────── */
+
+/* 1) Box‐sizing reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 2) Base page styles */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #00b7ff;
+  color: #1f2937;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+/* 3) App wrapper */
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
+}
+
+/* 4) Navbar (solid red now) */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #e63946;    /* solid true-red */
+  color: white;
+  /* remove glass effect if you like: */
+  backdrop-filter: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* 5) Navbar links & logo text */
+.navbar a {
+  margin-left: 1rem;
+  text-decoration: none;
+  color: #ffffff;               /* white text */
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.navbar a:hover {
+  color: #f1f1f1;               /* off-white on hover */
+}
+.navbar a.active {
+  color: #ffffff;               /* keep active link white */
+}
+
+/* 6) Hero section */
+.hero {
   text-align: center;
+  margin-top: 3rem;
+}
+.hero h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+.hero p {
+  font-size: 1.125rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+.hero button {
+  background-color: #10b981;
+  color: rgb(1, 49, 243);
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  margin-top: 1.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+.hero button:hover {
+  background-color: #059669;
+}
+
+/* 7) Feature cards */
+.features {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+.feature-card {
+  background-color: rgba(8, 100, 222, 0.504);
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  width: 240px;
+  padding: 2rem;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(9, 20, 218, 0.1);
+}
+.feature-icon {
+  font-size: 2rem;
+  color: #0b0ff5;
+}
+.feature-card h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 1rem 0 0.5rem;
+}
+.feature-card p {
+  font-size: 0.95rem;
+  color: #083ff0;
+}
+
+/* 8) Logo spin animation */
+@keyframes logo-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.hero {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.hero p {
+  font-size: 1.125rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+
+.hero button {
+  background-color: #10b981;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  margin-top: 1.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s ease;
+}
+
+.hero button:hover {
+  background-color: #059669;
+}
+
+.features {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.feature-card {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  width: 240px;
+  padding: 2rem;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.feature-card h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 1rem 0 0.5rem;
+}
+
+.feature-card p {
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+.feature-icon {
+  font-size: 2rem;
+  color: #f59e0b;
+}
+
+.read-the-docs {
+  color: #888;
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
+  height: 5rem;
+  padding: 1rem;
+  transition: filter 0.3s;
   will-change: filter;
-  transition: filter 300ms;
 }
+
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 1rem #60a5fa);
 }
 
 @keyframes logo-spin {
@@ -26,7 +225,6 @@
     transform: rotate(360deg);
   }
 }
-/* src/App.css */
 .heart-icon {
   color: green;
 }
@@ -42,10 +240,4 @@
   }
 }
 
-.card {
-  padding: 2em;
-}
 
-.read-the-docs {
-  color: #888;
-}

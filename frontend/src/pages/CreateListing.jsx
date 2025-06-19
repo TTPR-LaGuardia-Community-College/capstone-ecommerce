@@ -1,93 +1,200 @@
+<<<<<<< HEAD
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+=======
+// import React, { useState } from "react";
+// import { useNavigate } from "react-router-dom";
 
-const CreateListing = () => {
-  const navigate = useNavigate();
+// function CreateListing() {
+//   const navigate = useNavigate();
+//   const [form, setForm] = useState({
+//     title: "",
+//     description: "",
+//     price: "",
+//     category: "",
+//   });
 
-  const [form, setForm] = useState({
-    name: '',
-    description: '',
-    price: '',
-    imageUrl: ''
-  });
-  const [preview, setPreview] = useState('');
-  const [isAuthorized, setIsAuthorized] = useState(false);
+//   function handleChange(e) {
+//     setForm({ ...form, [e.target.name]: e.target.value });
+//   }
 
-  useEffect(() => {
-    const loggedInAdmin = JSON.parse(localStorage.getItem('loggedInAdmin'));
-    if (loggedInAdmin && loggedInAdmin.email) {
-      setIsAuthorized(true);
-    } else {
-      alert('Only admins can access this page.');
-      navigate('/admin');
-    }
-  }, [navigate]);
+//   async function handleSubmit(e) {
+//     e.preventDefault();
+//     try {
+//       const res = await fetch(`${import.meta.env.VITE_API_URL}/listings`, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${localStorage.getItem("token")}`,
+//         },
+//         body: JSON.stringify({
+//           ...form,
+//           price: parseFloat(form.price),
+//         }),
+//       });
+//       const data = await res.json();
+//       navigate(`/listings/${data.id}`);
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   }
 
-  if (!isAuthorized) return null;
+//   return (
+//     <div style={{ padding: "1rem" }}>
+//       <h1>Create Listing</h1>
+//       <form onSubmit={handleSubmit}>
+//         <label>
+//           Title:
+//           <br />
+//           <input name="title" onChange={handleChange} required />
+//         </label>
+//         <br />
+//         <label>
+//           Description:
+//           <br />
+//           <textarea name="description" onChange={handleChange} required />
+//         </label>
+//         <br />
+//         <label>
+//           Price:
+//           <br />
+//           <input
+//             name="price"
+//             type="number"
+//             step="0.01"
+//             onChange={handleChange}
+//             required
+//           />
+//         </label>
+//         <br />
+//         <label>
+//           Category:
+//           <br />
+//           <input name="category" onChange={handleChange} required />
+//         </label>
+//         <br />
+//         <br />
+//         <button type="submit">Post</button>
+//       </form>
+//     </div>
+//   );
+// }
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
+// export default CreateListing;
 
-    if (name === 'imageFile' && files.length > 0) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setForm((prev) => ({ ...prev, imageUrl: reader.result }));
-        setPreview(reader.result);
-      };
-      reader.readAsDataURL(files[0]);
-    } else if (name === 'imageUrl') {
-      setForm({ ...form, imageUrl: value });
-      setPreview(value);
-    } else {
-      setForm({ ...form, [name]: value });
-    }
+
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../api.js";
+import { useAuth } from "../context/AuthContext.jsx";
+import { toast } from "react-toastify";
+import "./CreateListing.css";
+
+export default function CreateListing() {
+  const { user }   = useAuth();
+  const nav        = useNavigate();
+  const [form, setForm]     = useState({ title:"",desc:"",price:"",cat:"",imageUrl:"" });
+  const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState("");
+
+  if (!user) return <p>Please <Link to="/login">login</Link> to post a listing.</p>;
+>>>>>>> 91490b1a7a46b94bc266ad91512ee02371cf6cb8
+
+  const onChange = (e) => {
+    setForm(f => ({ ...f, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    const storedListings = JSON.parse(localStorage.getItem('productListings')) || [];
-    const newListing = { ...form, id: Date.now() };
-    const updatedListings = [...storedListings, newListing];
-    localStorage.setItem('productListings', JSON.stringify(updatedListings));
-    alert('Product listing posted!');
-    setForm({ name: '', description: '', price: '', imageUrl: '' });
-    setPreview('');
+    setError("");
+    if (form.title.length < 3) {
+      return setError("Title must be at least 3 characters.");
+    }
+    setLoading(true);
+    try {
+      const payload = {
+        title:       form.title,
+        description: form.desc,
+        price:       parseFloat(form.price),
+        category:    form.cat,
+        imageUrl:    form.imageUrl || null,
+      };
+      const res = await api.post("/listings", payload);
+      toast.success("Listing created!");
+      nav(`/products/${res.data.id}`);
+    } catch (err) {
+      setError(err.response?.data?.error || "Failed to create");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div style={container}>
-      <h2 style={heading}>📝 Create Product Listing</h2>
-      <form onSubmit={handleSubmit}>
-        <label style={label}>Product Name:</label>
-        <input type="text" name="name" value={form.name} onChange={handleChange} required style={input} />
-
-        <label style={label}>Description:</label>
-        <textarea name="description" value={form.description} onChange={handleChange} required style={textarea} />
-
-        <label style={label}>Price ($):</label>
-        <input type="number" name="price" value={form.price} onChange={handleChange} required style={input} />
-
-        <label style={label}>Image URL:</label>
-        <input type="text" name="imageUrl" value={form.imageUrl} onChange={handleChange} style={input} />
-
-        <div style={{ textAlign: 'center', margin: '1rem 0' }}>— OR —</div>
-
-        <label style={label}>Upload Image:</label>
-        <input type="file" name="imageFile" accept="image/*" onChange={handleChange} style={input} />
-
-        {preview && (
-          <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-            <img src={preview} alt="Preview" style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }} />
-          </div>
-        )}
-
-        <button type="submit" style={button}>Post Listing</button>
+    <div className="create-listing">
+      <h1>Create a New Listing</h1>
+      {error && <p className="error">{error}</p>}
+      <form onSubmit={onSubmit}>
+        <label>
+          Title
+          <input
+            name="title"
+            value={form.title}
+            onChange={onChange}
+            required
+            disabled={loading}
+          />
+        </label>
+        <label>
+          Description
+          <textarea
+            name="desc"
+            value={form.desc}
+            onChange={onChange}
+            required
+            disabled={loading}
+          />
+        </label>
+        <label>
+          Price
+          <input
+            name="price"
+            type="number"
+            step="0.01"
+            value={form.price}
+            onChange={onChange}
+            required
+            disabled={loading}
+          />
+        </label>
+        <label>
+          Category
+          <input
+            name="cat"
+            value={form.cat}
+            onChange={onChange}
+            required
+            disabled={loading}
+          />
+        </label>
+        <label>
+          Image URL
+          <input
+            name="imageUrl"
+            value={form.imageUrl}
+            onChange={onChange}
+            disabled={loading}
+          />
+        </label>
+        <button type="submit" disabled={loading}>
+          {loading ? "Posting…" : "Post Listing"}
+        </button>
       </form>
     </div>
   );
-};
+}
 
+<<<<<<< HEAD
 const container = {
   maxWidth: '500px',
   margin: '3rem auto',
@@ -141,3 +248,5 @@ const button = {
 
 export default CreateListing;
  
+=======
+>>>>>>> 91490b1a7a46b94bc266ad91512ee02371cf6cb8

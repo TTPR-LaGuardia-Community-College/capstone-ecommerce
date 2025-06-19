@@ -1,31 +1,88 @@
+<<<<<<< HEAD
  
 
 
 body {
   font-family: 'Inter', sans-serif;
   background-color: #f9f9f9;
+=======
+/* ─── index.css ───────────────────────────────────────────────── */
+
+/* 1) Google Font + box-sizing reset */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+* {
+  box-sizing: border-box;
+>>>>>>> 91490b1a7a46b94bc266ad91512ee02371cf6cb8
   margin: 0;
   padding: 0;
-  color: #222;
 }
 
-#root {
-  max-width: 1280px;
+/* 2) Global body (font + background) */
+body {
+  font-family: 'Roboto', sans-serif;
+  color: #1f2937;
+  line-height: 1.6;
+
+  background:
+    linear-gradient(rgba(255,255,255,0.6), rgba(255,255,255,0.6)),
+    url('/images/shop.png') no-repeat center center fixed;
+  background-size: cover;
+  background-color: #f0f4f8;
+}
+
+/* 3) Header (glass) */
+header {
+  background-color: rgba(255,255,255,0.7);
+  backdrop-filter: blur(6px);
+}
+
+/* 4) Global links now red (outside navbar) */
+a {
+  color: #e63946;
+  text-decoration: none;
+}
+a:hover {
+  color: #a8323a;
+  text-decoration: underline;
+}
+
+/* 5) Form elements */
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+/* 6) Inputs/buttons styling */
+input,
+textarea,
+select,
+button {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+}
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid #3b82f6;
+}
+
+/* 7) Images reset */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* 8) Utility classes */
+.hidden {
+  display: none;
+}
+.container {
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
-}
-
-button {
-  background-color: #2e8b57;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-button:hover {
-  background-color: #246a44;
 }

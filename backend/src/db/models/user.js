@@ -1,5 +1,3 @@
-// src/db/models/user.js
-
 "use strict";
 const { Model } = require("sequelize");
 
@@ -12,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Message, { foreignKey: "receiverId", as: "receivedMessages" });
       
       User.hasMany(models.Wishlist, { foreignKey: "userId", as: "wishlistItems" });
+      User.hasMany(models.Cart, { foreignKey: "userId", as: "cartItems", onDelete: "CASCADE" });
     }
   }
 
@@ -52,6 +51,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
+      },
+      passwordResetToken: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      passwordResetExpires: {
+        type: DataTypes.DATE,
+        allowNull: true,
       },
     },
     {

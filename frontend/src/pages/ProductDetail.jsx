@@ -1,133 +1,134 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
+// import React, { useState, useEffect } from "react";
+// import { useParams } from "react-router-dom";
 
-const ProductDetail = () => {
+// function ListingDetail() {
+//   const { id } = useParams();
+//   const [listing, setListing] = useState(null);
+//   const [message, setMessage] = useState("");
+
+//   useEffect(() => {
+//     async function fetchListing() {
+//       try {
+//         const res = await fetch(
+//           `${import.meta.env.VITE_API_URL}/listings/${id}`
+//         );
+//         setListing(await res.json());
+//       } catch (err) {
+//         console.error(err);
+//       }
+//     }
+//     fetchListing();
+//   }, [id]);
+
+//   async function handleAddWishlist() {
+//     try {
+//       const res = await fetch(`${import.meta.env.VITE_API_URL}/wishlist`, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${localStorage.getItem("token")}`,
+//         },
+//         body: JSON.stringify({ listingId: id }),
+//       });
+//       if (res.ok) alert("Added to wishlist");
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   }
+
+//   async function handleSendMessage() {
+//     try {
+//       const res = await fetch(`${import.meta.env.VITE_API_URL}/messages`, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${localStorage.getItem("token")}`,
+//         },
+//         body: JSON.stringify({
+//           receiverId: listing.owner.id,
+//           content: message,
+//         }),
+//       });
+//       if (res.ok) alert("Message sent");
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   }
+
+//   if (!listing) return <p>Loading…</p>;
+
+//   return (
+//     <div style={{ padding: "1rem" }}>
+//       <h2>{listing.title}</h2>
+//       <p>{listing.description}</p>
+//       <p>
+//         <strong>Price:</strong> ${listing.price}
+//       </p>
+//       <button onClick={handleAddWishlist}>Add to Wishlist</button>
+//       <hr />
+//       <h3>Message Seller ({listing.owner.username})</h3>
+//       <textarea
+//         rows="4"
+//         cols="50"
+//         value={message}
+//         onChange={(e) => setMessage(e.target.value)}
+//       />
+//       <br />
+//       <button onClick={handleSendMessage}>Send</button>
+//     </div>
+//   );
+// }
+
+// export default ListingDetail;
+
+
+import React, { useState, useEffect, useContext } from "react";
+import { useParams } from "react-router-dom";
+import api from "../api.js";
+import { CartContext } from "../context/CartContext.jsx";
+import { toast } from "react-toastify";
+import "./ProductDetail.css";
+
+export default function ProductDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const { addToCart, likeProduct, unlikeProduct, likedItems } = useCart();
-
   const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState("");
+  const { addToCart }         = useContext(CartContext);
 
   useEffect(() => {
-    const defaultProducts = [
-      {
-        id: 1,
-        name: "AirPods Pro",
-        price: 199.99,
-        description: "Noise-cancelling wireless earbuds",
-        category: "Electronics",
-        image: "https://via.placeholder.com/150"
-      },
-      {
-        id: 2,
-        name: "Smart Watch",
-        price: 149.99,
-        description: "Fitness tracking smartwatch",
-        category: "Electronics",
-        image: "https://via.placeholder.com/150"
-      },
-      {
-        id: 3,
-        name: "Bluetooth Speaker",
-        price: 89.99,
-        description: "Portable high-quality sound speaker",
-        category: "Accessories",
-        image: "https://via.placeholder.com/150"
-      },
-      {
-        id: 4,
-        name: "College Math Textbook",
-        price: 59.99,
-        description: "Essential for college algebra and calculus",
-        category: "Books",
-        image: "https://via.placeholder.com/150"
+    (async () => {
+      try {
+        const res = await api.get(`/listings/${id}`);
+        setProduct(res.data);
+      } catch {
+        setError("Failed to load product");
+      } finally {
+        setLoading(false);
       }
-    ];
+    })();
+  }, [id]);
 
-    const saved = JSON.parse(localStorage.getItem('productListings')) || [];
-    const all = [...defaultProducts, ...saved];
-    const found = all.find(p => String(p.id) === id);
-    if (!found) return navigate('/products');
-    setProduct(found);
-  }, [id, navigate]);
-
-  if (!product) return null;
-
-  const isLiked = likedItems.some(item => item.id === product.id);
+  if (loading) return <p>Loading…</p>;
+  if (error)   return <p className="error">{error}</p>;
 
   return (
-    <div style={container}>
-      <div style={imageSection}>
-        <img src={product.image || product.imageUrl} alt={product.name} style={image} />
-      </div>
-      <div style={infoSection}>
-        <h2>{product.name}</h2>
-        <p style={price}>${product.price}</p>
+    <div className="product-detail">
+      <img src={product.imageUrl} alt={product.title} />
+      <div className="info">
+        <h1>{product.title}</h1>
+        <p>${parseFloat(product.price).toFixed(2)}</p>
         <p>{product.description}</p>
-
-        <button onClick={() => addToCart(product)} style={button}>
-          🛒 Add to Cart
-        </button>
-
         <button
-          onClick={() => {
-            isLiked ? unlikeProduct(product.id) : likeProduct(product);
+          onClick={async () => {
+            await addToCart(product.id);
+            toast.success("Added to cart");
           }}
-          style={{ ...button, marginTop: '1rem' }}
         >
-          {isLiked ? '❤️ Liked' : '🤍 Like'}
+          Add to Cart
         </button>
       </div>
     </div>
   );
-};
+}
 
-const container = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  maxWidth: '900px',
-  margin: '2rem auto',
-  padding: '2rem',
-  gap: '2rem',
-  border: '1px solid #eee',
-  borderRadius: '10px',
-  background: '#fff',
-  boxShadow: '0 0 10px rgba(0,0,0,0.05)',
-  fontFamily: 'Segoe UI, sans-serif'
-};
-
-const imageSection = {
-  flex: '1 1 300px',
-  textAlign: 'center'
-};
-
-const image = {
-  width: '100%',
-  maxWidth: '400px',
-  height: 'auto',
-  objectFit: 'contain',
-  borderRadius: '8px'
-};
-
-const infoSection = {
-  flex: '1 1 300px'
-};
-
-const price = {
-  fontSize: '1.5rem',
-  fontWeight: 'bold',
-  color: '#2e8b57'
-};
-
-const button = {
-  padding: '0.8rem 1.2rem',
-  backgroundColor: '#2e8b57',
-  color: 'white',
-  border: 'none',
-  borderRadius: '5px',
-  fontSize: '1rem',
-  cursor: 'pointer'
-};
-
-export default ProductDetail;
