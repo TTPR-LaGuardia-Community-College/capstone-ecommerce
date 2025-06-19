@@ -1,77 +1,60 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import api from "../api.js";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
-const Login = () => {
-  const [form, setForm] = useState({ username: '', password: '' });
-  const [error, setError] = useState('');
-  const { login } = useAuth();
+function Login() {
   const navigate = useNavigate();
+  const [form, setForm] = useState({ email: "", password: "" });
 
-  const handleChange = (e) => {
+  function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  }
 
-  const handleSubmit = (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
-
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-
-    if (
-      storedUser &&
-      form.username === storedUser.username &&
-      form.password === storedUser.password
-    ) {
-      login(form.username);
-      navigate('/create-listing');
-    } else {
-      setError('Invalid username or password');
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      localStorage.setItem("token", data.token);
+      navigate("/");
+    } catch (err) {
+      console.error(err);
+      alert("Login failed");
     }
-  };
+  }
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '400px', margin: 'auto' }}>
-      <h2>Login</h2>
+    <div style={{ padding: "1rem" }}>
+      <h1>Login</h1>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={form.username}
-          onChange={handleChange}
-          style={{ width: '100%', padding: '0.5rem', marginBottom: '1rem' }}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          style={{ width: '100%', padding: '0.5rem', marginBottom: '1rem' }}
-          required
-        />
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button
-          type="submit"
-          style={{
-            width: '100%',
-            padding: '0.6rem',
-            backgroundColor: '#2e8b57',
-            color: 'white',
-            border: 'none'
-          }}
-        >
-          Log In
-        </button>
+        <label>
+          Email:
+          <br />
+          <input name="email" type="email" onChange={handleChange} required />
+        </label>
+        <br />
+        <label>
+          Password:
+          <br />
+          <input
+            name="password"
+            type="password"
+            onChange={handleChange}
+            required
+          />
+        </label>
+        <br />
+        <br />
+        <button type="submit">Login</button>
       </form>
-
-      <p style={{ marginTop: '1rem' }}>
-        Not registered? <Link to="/signup">Sign up here</Link>
+      <p>
+        No account? <Link to="/register">Register here</Link>.
       </p>
     </div>
   );
-};
+}
 
 export default Login;
