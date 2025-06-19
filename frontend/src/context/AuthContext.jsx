@@ -1,29 +1,44 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect } from "react";
+import api from "../api.js";
 
-const AuthContext = createContext();
-export const useAuth = () => useContext(AuthContext);
+export const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+export function AuthProvider({ children }) {
+  const [user, setUser]       = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  // on mount, try to fetch profile
   useEffect(() => {
-    const stored = localStorage.getItem('user');
-    if (stored) setUser(JSON.parse(stored));
+    const token = localStorage.getItem("token");
+    if (!token) return setLoading(false);
+
+    api.get("/auth/profile")
+      .then(res => setUser(res.data))
+      .catch(() => localStorage.removeItem("token"))
+      .finally(() => setLoading(false));
   }, []);
 
-  const login = (userData) => {
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
-  };
+  function login(email, password) {
+    return api.post("/auth/login", { email, password })
+      .then(res => {
+        localStorage.setItem("token", res.data.token);
+        return api.get("/auth/profile");
+      })
+      .then(res => setUser(res.data));
+  }
 
-  const logout = () => {
-    localStorage.removeItem('user');
+  function register(username, email, password) {
+    return api.post("/auth/register", { username, email, password });
+  }
+
+  function logout() {
+    localStorage.removeItem("token");
     setUser(null);
-  };
+  }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
-};
+}

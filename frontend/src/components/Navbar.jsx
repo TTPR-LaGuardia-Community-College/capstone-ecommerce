@@ -1,33 +1,33 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext.jsx";
+import "./Navbar.css";
 
-function Navbar() {
+export default function Navbar() {
+  const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
 
-  function handleLogout() {
-    localStorage.removeItem("token");
-    navigate("/login");
+  function onLogout() {
+    logout();
+    navigate("/");
   }
 
   return (
-    <nav style={{ padding: "1rem", borderBottom: "1px solid #ccc" }}>
-      <Link to="/">Home</Link>{" | "}
-      {token ? (
-        <>
-          <Link to="/create">Create</Link>{" | "}
-          <Link to="/wishlist">Wishlist</Link>{" | "}
-          <Link to="/messages">Messages</Link>{" | "}
-          <button onClick={handleLogout}>Logout</button>
-        </>
-      ) : (
-        <>
-          <Link to="/login">Login</Link>{" | "}
-          <Link to="/register">Register</Link>
-        </>
-      )}
+    <nav className="navbar">
+      <Link to="/">Home</Link>
+      <Link to="/products">Products</Link>
+      {user && <Link to="/cart">Cart</Link>}
+      {user && <Link to="/wishlist">Wishlist</Link>}
+      {user && <Link to="/messages">Messages</Link>}
+      {user?.role === "admin" && <Link to="/admin">Admin</Link>}
+
+      {user
+        ? <button onClick={onLogout}>Logout</button>
+        : <>
+            <Link to="/login">Login</Link>
+            <Link to="/register">Register</Link>
+          </>
+      }
     </nav>
   );
 }
-
-export default Navbar;

@@ -1,34 +1,31 @@
 import React, { useState, useEffect } from "react";
+import api from "../api.js";
 
 function Messages() {
   const [inbox, setInbox] = useState([]);
-  const [sent, setSent] = useState([]);
+  const [sent, setSent]   = useState([]);
 
   useEffect(() => {
-    async function fetchMsgs() {
+    async function load() {
       try {
         const [inRes, sentRes] = await Promise.all([
-          fetch(`${import.meta.env.VITE_API_URL}/messages/inbox`, {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          }),
-          fetch(`${import.meta.env.VITE_API_URL}/messages/sent`, {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          }),
+          api.get("/messages/inbox"),
+          api.get("/messages/sent"),
         ]);
-        setInbox(await inRes.json());
-        setSent(await sentRes.json());
+        setInbox(inRes.data);
+        setSent(sentRes.data);
       } catch (err) {
-        console.error(err);
+        console.error("Messages load failed", err);
       }
     }
-    fetchMsgs();
+    load();
   }, []);
 
   return (
-    <div style={{ padding: "1rem" }}>
+    <div className="messages-page">
       <h1>Inbox</h1>
       {inbox.map((m) => (
-        <div key={m.id} style={{ borderBottom: "1px solid #ddd", margin: "1rem 0" }}>
+        <div key={m.id} className="message-card">
           <strong>From:</strong> {m.sender.username}<br/>
           <em>{new Date(m.createdAt).toLocaleString()}</em>
           <p>{m.content}</p>
@@ -37,7 +34,7 @@ function Messages() {
 
       <h1>Sent</h1>
       {sent.map((m) => (
-        <div key={m.id} style={{ borderBottom: "1px solid #ddd", margin: "1rem 0" }}>
+        <div key={m.id} className="message-card">
           <strong>To:</strong> {m.receiver.username}<br/>
           <em>{new Date(m.createdAt).toLocaleString()}</em>
           <p>{m.content}</p>

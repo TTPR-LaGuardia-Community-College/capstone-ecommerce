@@ -1,58 +1,31 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from "react";
+import api from "../api.js";
 
-const CartContext = createContext();
+export const CartContext = createContext();
 
-export const useCart = () => useContext(CartContext);
+export function CartProvider({ children }) {
+  const [items, setItems] = useState([]);
 
-export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
-  const [likedItems, setLikedItems] = useState([]);
+  // load cart on mount
+  useEffect(() => {
+    api.get("/cart")
+      .then(res => setItems(res.data))
+      .catch(console.error);
+  }, []);
 
-  const addToCart = (product) => {
-    setCartItems((prev) => [...prev, product]);
-  };
+  function addToCart(productId) {
+    return api.post("/cart", { productId })
+      .then(res => setItems(res.data));
+  }
 
-  const likeProduct = (product) => {
-    if (!likedItems.find((item) => item.id === product.id)) {
-      setLikedItems((prev) => [...prev, product]);
-      addToCart(product);
-    }
-  };
-
-  const unlikeProduct = (productId) => {
-    setLikedItems((prev) => prev.filter((item) => item.id !== productId));
-  };
-
-  const increment = (id) => {
-    setCartItems((prev) =>
-      prev.map((item) => item.id === id ? { ...item, qty: (item.qty || 1) + 1 } : item)
-    );
-  };
-
-  const decrement = (id) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, qty: Math.max((item.qty || 1) - 1, 1) } : item
-      )
-    );
-  };
-
-  const remove = (id) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
-  };
+  function removeFromCart(productId) {
+    return api.delete(`/cart/${productId}`)
+      .then(res => setItems(res.data));
+  }
 
   return (
-    <CartContext.Provider value={{
-      cart: cartItems,
-      likedItems,
-      addToCart,
-      likeProduct,
-      unlikeProduct,
-      increment,
-      decrement,
-      remove
-    }}>
+    <CartContext.Provider value={{ items, addToCart, removeFromCart }}>
       {children}
     </CartContext.Provider>
   );
-};
+}
