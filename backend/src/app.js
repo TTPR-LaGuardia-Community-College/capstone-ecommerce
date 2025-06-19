@@ -1,39 +1,45 @@
+// src/app.js
 require("dotenv").config();
 const express = require("express");
-const cors = require("cors")
+const cors    = require("cors");
 
-const indexRouter = require("./routes/index.js");
-const usersRouter = require("./routes/users.js");
-const authRoutes = require("./routes/auth.js");
-const listingsRoutes = require("./routes/listings.js");
-const wishlistRoutes = require("./routes/wishlist.js");
-const messagesRoutes = require("./routes/messages.js");
-const adminRoutes = require("./routes/admin.js");
-const cartRoutes = require("./routes/cart");
+const authRoutes     = require("./routes/auth");
+const usersRoutes    = require("./routes/users");     // once created
+const listingsRoutes = require("./routes/listings");
+const cartRoutes     = require("./routes/cart");
+const wishlistRoutes = require("./routes/wishlist");
+const messagesRoutes = require("./routes/messages");
+const adminRoutes    = require("./routes/admin");
 
 const app = express();
 
+// ── DATABASE CONNECTION ───────────────────────────────────────────────────
+const { sequelize } = require("./db/models");
+sequelize.authenticate().then(() => console.log("DB connected"));
+
+// ── GLOBAL MIDDLEWARE ──────────────────────────────────────────────────────
 app.use(cors());
 app.use(express.json());
 
-const port = process.env.PORT || 3000;
-
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
-app.use("/api/auth", authRoutes);
+// ── ROUTES ─────────────────────────────────────────────────────────────────
+app.use("/api/auth",     authRoutes);
+app.use("/api/users",    usersRoutes);
 app.use("/api/listings", listingsRoutes);
+app.use("/api/cart",     cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/messages", messagesRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api/cart", cartRoutes);
+app.use("/api/admin",    adminRoutes);
 
-app.use((req, res) => res.status(404).json({ error: "Not found" }));
-// global error-handler
+// ── 404 & ERROR HANDLING ───────────────────────────────────────────────────
+app.use((req, res) => {
+  res.status(404).json({ error: "Not found" });
+});
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: "Internal server error" });
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+// ── START SERVER ───────────────────────────────────────────────────────────
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
