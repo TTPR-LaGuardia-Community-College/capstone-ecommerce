@@ -1,34 +1,33 @@
-// src/components/Navbar.jsx
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import './Navbar.css';
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 
-const Navbar = () => {
-  const { cart } = useCart();
-  const liked = JSON.parse(localStorage.getItem('likedProducts')) || [];
+function Navbar() {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    navigate("/login");
+  }
 
   return (
-    <nav className="navbar">
-      <NavLink to="/" className="logo">🏫 CampusTrade</NavLink>
-
-      <div className="nav-links">
-        <NavLink to="/" className="nav-item" activeclassname="active">Home</NavLink>
-        <NavLink to="/admin" className="nav-item" activeclassname="active">Admin</NavLink>
-        <NavLink to="/products" className="nav-item" activeclassname="active">Products</NavLink>
-
-        <NavLink to="/cart" className="nav-item" activeclassname="active">
-          Cart <span className="badge">{cart.length}</span>
-        </NavLink>
-
-        <NavLink to="/liked" className="nav-item" activeclassname="active">
-          Liked <span className="badge">{liked.length}</span>
-        </NavLink>
-
-        <NavLink to="/create-listing" className="nav-item" activeclassname="active">Create Listing</NavLink>
-      </div>
+    <nav style={{ padding: "1rem", borderBottom: "1px solid #ccc" }}>
+      <Link to="/">Home</Link>{" | "}
+      {token ? (
+        <>
+          <Link to="/create">Create</Link>{" | "}
+          <Link to="/wishlist">Wishlist</Link>{" | "}
+          <Link to="/messages">Messages</Link>{" | "}
+          <button onClick={handleLogout}>Logout</button>
+        </>
+      ) : (
+        <>
+          <Link to="/login">Login</Link>{" | "}
+          <Link to="/register">Register</Link>
+        </>
+      )}
     </nav>
   );
-};
+}
 
 export default Navbar;
