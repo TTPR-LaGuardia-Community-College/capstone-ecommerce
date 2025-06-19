@@ -1,12 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { use, useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
-import { CartContext } from "../context/CartContext.jsx";
+import { useCart } from "../context/CartContext.jsx";
 import "./Navbar.css";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
-  const { cartCount }    = useContext(CartContext);
+  const { cartCount }    = useCart();
   const [open, setOpen]  = useState(false);
   const [dark, setDark]  = useState(false);
   const nav              = useNavigate();
