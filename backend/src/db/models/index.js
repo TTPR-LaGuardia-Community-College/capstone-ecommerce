@@ -22,6 +22,9 @@ if (config.use_env_variable) {
     port: config.port,
     dialect: "postgresql",
     dialectModule: pg,
+    dialectOptions: {
+      decimalNumbers: true,
+    },
     logging: env === "development" ? console.log : false, 
   });
 }

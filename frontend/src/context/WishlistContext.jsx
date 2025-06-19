@@ -2,9 +2,9 @@ import React, {
   createContext,
   useState,
   useEffect,
+  useContext,
   useCallback,
   useMemo,
-  useContext
 } from "react";
 import api from "../api.js";
 import { useAuth } from "./AuthContext.jsx";
@@ -13,19 +13,20 @@ export const WishlistContext = createContext({
   items: [],
   loading: false,
   error: null,
-  addToWishlist: async () => {},
-  removeFromWishlist: async () => {},
+  addToWishlist: async (listingId) => {},
+  removeFromWishlist: async (listingId) => {},
   clearWishlist: async () => {},
+  isWishlisted: (listingId) => false,
   wishlistCount: 0,
 });
 
 export function WishlistProvider({ children }) {
-  const { user } =  useAuth();
+  const { user } = useAuth();
   const [items, setItems]     = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState(null);
 
-  // 1) Fetch wishlist when user logs in or changes
+  // Fetch wishlist when user logs in / out
   const fetchWishlist = useCallback(async () => {
     if (!user) {
       setItems([]);
@@ -47,47 +48,36 @@ export function WishlistProvider({ children }) {
     fetchWishlist();
   }, [fetchWishlist]);
 
-  // 2) Add an item
-  const addToWishlist = useCallback(
-    async (listingId) => {
-      setLoading(true);
-      try {
-        const { data } = await api.post("/wishlist", { listingId });
-        setItems(data);
-        setError(null);
-      } catch (err) {
-        setError(err.response?.data?.error || err.message);
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
+  const addToWishlist = useCallback(async (listingId) => {
+    setLoading(true);
+    try {
+      const { data } = await api.post("/wishlist", { listingId });
+      setItems(data);
+      setError(null);
+    } catch (err) {
+      setError(err.response?.data?.error || err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  // 3) Remove an item
-  const removeFromWishlist = useCallback(
-    async (listingId) => {
-      setLoading(true);
-      try {
-        await api.delete(`/wishlist/${listingId}`);
-        setItems((prev) => prev.filter((i) => i.listingId !== listingId));
-        setError(null);
-      } catch (err) {
-        setError(err.response?.data?.error || err.message);
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
+  const removeFromWishlist = useCallback(async (listingId) => {
+    setLoading(true);
+    try {
+      const { data } = await api.delete(`/wishlist/${listingId}`);
+      setItems(data);
+      setError(null);
+    } catch (err) {
+      setError(err.response?.data?.error || err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  // 4) Clear all (bulk remove)
   const clearWishlist = useCallback(async () => {
     setLoading(true);
     try {
-      await Promise.all(
-        items.map((i) => api.delete(`/wishlist/${i.listingId}`))
-      );
+      await Promise.all(items.map(i => api.delete(`/wishlist/${i.listingId}`)));
       setItems([]);
       setError(null);
     } catch (err) {
@@ -97,22 +87,31 @@ export function WishlistProvider({ children }) {
     }
   }, [items]);
 
-  // 5) Computed count
+  // Helper to check if a given listingId is already in the wishlist
+  const isWishlisted = useMemo(
+    () => (listingId) => items.some(i => i.listingId === listingId),
+    [items]
+  );
+
   const wishlistCount = useMemo(() => items.length, [items]);
 
   return (
-    <WishlistContext.Provider
-      value={{
-        items,
-        loading,
-        error,
-        addToWishlist,
-        removeFromWishlist,
-        clearWishlist,
-        wishlistCount,
-      }}
-    >
+    <WishlistContext.Provider value={{
+      items,
+      loading,
+      error,
+      addToWishlist,
+      removeFromWishlist,
+      clearWishlist,
+      isWishlisted,
+      wishlistCount,
+    }}>
       {children}
     </WishlistContext.Provider>
   );
+}
+
+// custom hook for consuming the context
+export function useWishlist() {
+  return useContext(WishlistContext);
 }

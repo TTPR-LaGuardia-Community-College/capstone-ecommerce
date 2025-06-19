@@ -1,4 +1,5 @@
-import React, { use, useContext, useState } from "react";
+// src/components/Navbar.jsx
+import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useCart } from "../context/CartContext.jsx";
@@ -7,61 +8,56 @@ import "./Navbar.css";
 export default function Navbar() {
   const { user, logout } = useAuth();
   const { cartCount }    = useCart();
-  const [open, setOpen]  = useState(false);
-  const [dark, setDark]  = useState(false);
-  const nav              = useNavigate();
+  const navigate         = useNavigate();
 
   function onLogout() {
     logout();
-    nav("/");
-  }
-
-  function toggleDark() {
-    setDark(d => !d);
-    document.documentElement.classList.toggle("dark", !dark);
+    navigate("/");
   }
 
   return (
-    <header className="navbar">
-      <button
-        className="navbar__burger"
-        aria-label="Menu"
-        onClick={() => setOpen(o => !o)}
-      >
-        ☰
-      </button>
+    <nav className="navbar">
+      <NavLink to="/" className="nav__item">Home</NavLink>
 
-      <nav className={`navbar__nav ${open ? "open" : ""}`}>
-        <NavLink to="/"      className="nav__item">Home</NavLink>
-        <NavLink to="/products" className="nav__item">Products</NavLink>
-        {user && (
-          <>
-            <NavLink to="/cart" className="nav__item">
-              Cart{cartCount > 0 && <span className="badge">{cartCount}</span>}
+      <div className="nav__item dropdown">
+        <span>Products ▾</span>
+        <ul className="dropdown-menu">
+          <li>
+            <NavLink to="/products" className="dropdown__link">
+              All Products
             </NavLink>
-            <NavLink to="/wishlist" className="nav__item">Wishlist</NavLink>
-            <NavLink to="/messages" className="nav__item">Messages</NavLink>
-          </>
-        )}
-        {user?.role === "admin" && (
-          <NavLink to="/admin" className="nav__item">Admin</NavLink>
-        )}
+          </li>
+          <li>
+            <NavLink to="/products?sort=new" className="dropdown__link">
+              New Products
+            </NavLink>
+          </li>
+          {user && (
+            <li>
+              <NavLink to="/wishlist" className="dropdown__link">
+                Wishlist
+              </NavLink>
+            </li>
+          )}
+        </ul>
+      </div>
 
-        <button onClick={toggleDark} className="nav__item">
-          {dark ? "☀️" : "🌙"}
+      {user && (
+        <NavLink to="/cart" className="nav__item">
+          Cart{cartCount > 0 && <span className="badge">{cartCount}</span>}
+        </NavLink>
+      )}
+
+      {user ? (
+        <button onClick={onLogout} className="nav__item">
+          Logout
         </button>
-
-        {user ? (
-          <button onClick={onLogout} className="nav__item">
-            Logout
-          </button>
-        ) : (
-          <>
-            <NavLink to="/login"    className="nav__item">Login</NavLink>
-            <NavLink to="/register" className="nav__item">Register</NavLink>
-          </>
-        )}
-      </nav>
-    </header>
-  );
+      ) : (
+        <>
+          <NavLink to="/login" className="nav__item">Login</NavLink>
+          <NavLink to="/register" className="nav__item">Register</NavLink>
+        </>
+      )}
+    </nav>
+);
 }
