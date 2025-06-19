@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
+const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
-const { User, Listing } = require("../db/models");
+const { User, Listing, Sequelize } = require("../db/models");
+const { Op } = Sequelize;
 
 require("dotenv").config();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -50,7 +52,7 @@ router.delete("/user/:id", authenticate, requireAdmin, async (req, res) => {
 
 // FORCE DELETE ANY LISTING
 
-router.delete("/listing/:id", authenticate, requireAdmin, async (req, res) => {
+router.delete("/listings/:id", authenticate, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const listingToDelete = await Listing.findByPk(id);
@@ -95,6 +97,126 @@ router.post("/register", async (req, res) => {
     });
   } catch (err) {
     console.error("Error in /admin/register:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.get("/listings", async function (req, res) {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const offset = (page - 1) * limit;
+      const where = {};
+
+      if (req.query.search) {
+        where.title = { [Op.iLike]: `%${req.query.search}%` };
+      }
+      if (req.query.category) {
+        where.category = req.query.category;
+      }
+
+      // get paged listings + owner info
+      const { count, rows } = await Listing.findAndCountAll({
+        where,
+        limit,
+        offset,
+        order: [["createdAt", "DESC"]],
+        include: [{ model: User, as: "owner", attributes: ["id", "username"] }],
+      });
+
+      // fetch distinct categories for the filter dropdown
+      const cats = await Listing.findAll({
+        attributes: [
+          [Sequelize.fn("DISTINCT", Sequelize.col("category")), "category"],
+        ],
+      });
+      const categories = cats.map((c) => c.get("category"));
+      const totalPages = Math.ceil(count / limit);
+
+      return res.json({
+        data: rows,
+        meta: { totalPages, categories },
+      });
+    } catch (err) {
+      console.error("Error in GET /api/admin/listings:", err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  }
+);
+
+const transporter = nodemailer.createTransport({
+  host:     process.env.SMTP_HOST,
+  port:     Number(process.env.SMTP_PORT),
+  secure:   process.env.SMTP_SECURE === "true",
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
+
+// --- FORGOT PASSWORD ---
+router.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+    // only admins:
+    const admin = await User.findOne({ where: { email, role: "admin" } });
+
+    if (!admin) {
+      return res.json({ message: "If that email is registered, you’ll receive a reset link shortly." });
+    }
+
+    // 1) generate a token and expiry
+    const token = crypto.randomBytes(32).toString("hex");
+    admin.passwordResetToken   = token;
+    admin.passwordResetExpires = Date.now() + 3600_000; // 1 hour
+    await admin.save();
+
+    // 2) send email
+    const resetUrl = `${process.env.FRONTEND_URL}/admin/reset-password/${token}`;
+    await transporter.sendMail({
+      from:    process.env.SMTP_FROM,
+      to:      admin.email,
+      subject: "Your Admin Password Reset Link",
+      html: `
+        <p>You (or someone else) requested a password reset for your admin account.</p>
+        <p>Click <a href="${resetUrl}">here to reset your password</a>. The link expires in 1 hour.</p>
+        <p>If you didn’t request this, you can ignore this email.</p>
+      `,
+    });
+
+    return res.json({ message: "If that email is registered, you’ll receive a reset link shortly." });
+  } catch (err) {
+    console.error("Error in /admin/forgot-password:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// --- RESET PASSWORD ---
+router.post("/reset-password/:token", async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    const admin = await User.findOne({
+      where: {
+        passwordResetToken: token,
+        passwordResetExpires: { [Op.gt]: Date.now() },
+        role: "admin",
+      },
+    });
+    if (!admin) {
+      return res.status(400).json({ error: "Invalid or expired reset token" });
+    }
+
+    const hash = await bcrypt.hash(password, 10);
+    admin.password               = hash;
+    admin.passwordResetToken     = null;
+    admin.passwordResetExpires   = null;
+    await admin.save();
+
+    return res.json({ message: "Password has been reset successfully." });
+  } catch (err) {
+    console.error("Error in /admin/reset-password:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });

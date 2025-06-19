@@ -117,45 +117,89 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api.js";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./Auth.css";
 
-function AdminRegister() {
+export default function AdminRegister() {
   const nav = useNavigate();
   const [form, setForm] = useState({ email: "", password: "", secret: "" });
-  const [err, setErr] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  function onChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
+  const onChange = (e) => {
+    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  };
 
-  async function onSubmit(e) {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    try {
-      // if you require a secret code for admin
-      await api.post("/admin/register", form);
-      nav("/admin/login");
-    } catch {
-      setErr("Registration failed");
+    setError("");
+    setLoading(true);
+
+    // Basic client‐side validation
+    if (form.password.length < 6) {
+      setError("Password must be at least 6 characters");
+      setLoading(false);
+      return;
     }
-  }
+
+    try {
+      await api.post("/admin/register", form);
+      toast.success("Admin account created!");
+      nav("/admin/login");
+    } catch (err) {
+      const msg =
+        err.response?.data?.error ||
+        "Registration failed. Check your secret code.";
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="auth-page">
       <h1>Admin Register</h1>
       <form onSubmit={onSubmit}>
-        {err && <p className="error">{err}</p>}
-        <label>Email:
-          <input name="email" type="email" onChange={onChange} required/>
+        {error && <p className="error">{error}</p>}
+
+        <label>
+          Email
+          <input
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={onChange}
+            required
+          />
         </label>
-        <label>Password:
-          <input name="password" type="password" onChange={onChange} required/>
+
+        <label>
+          Password
+          <input
+            name="password"
+            type="password"
+            value={form.password}
+            onChange={onChange}
+            required
+          />
         </label>
-        <label>Secret Code:
-          <input name="secret" onChange={onChange} required/>
+
+        <label>
+          Secret Code
+          <input
+            name="secret"
+            type="text"
+            value={form.secret}
+            onChange={onChange}
+            required
+          />
         </label>
-        <button type="submit">Register</button>
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Registering…" : "Register"}
+        </button>
       </form>
     </div>
   );
 }
-
-export default AdminRegister;

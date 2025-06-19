@@ -108,46 +108,139 @@
 // export default AdminListings;
 
 import React, { useState, useEffect } from "react";
-import api from "../api.js";
 import { Link } from "react-router-dom";
+import api from "../api.js";
+import { toast } from "react-toastify";
+import "./AdminListings.css";
 
-function AdminListings() {
+export default function AdminListings() {
   const [listings, setListings] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
+  // pagination & filters state
+  const [page, setPage] = useState(1);
+  const limit = 10;
+  const [totalPages, setTotalPages] = useState(1);
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("");
+
+  // whenever page/search/category changes, refetch
   useEffect(() => {
-    async function load() {
-      try {
-        const res = await api.get("/admin/listings");
-        setListings(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-    load();
-  }, []);
+    fetchListings();
+  }, [page, search, category]);
 
-  async function remove(id) {
-    await api.delete(`/admin/listings/${id}`);
-    setListings(listings.filter(l => l.id !== id));
+  async function fetchListings() {
+    setLoading(true);
+    setError("");
+
+    try {
+      const params = { page, limit };
+      if (search)   params.search   = search;
+      if (category) params.category = category;
+
+      const res = await api.get("/admin/listings", { params });
+      setListings(res.data.data);
+      setTotalPages(res.data.meta.totalPages);
+      setCategories(res.data.meta.categories);
+    } catch (err) {
+      setError(err.response?.data?.error || "Failed to load listings");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleRemove(id) {
+    if (!window.confirm("Are you sure you want to delete this listing?")) return;
+    try {
+      await api.delete(`/admin/listings/${id}`);
+      toast.success("Listing deleted");
+      setListings((prev) => prev.filter((l) => l.id !== id));
+    } catch (err) {
+      toast.error(err.response?.data?.error || "Failed to delete");
+    }
   }
 
   return (
     <div className="admin-listings">
       <h1>All Listings</h1>
-      <Link to="/admin/listings/edit/new">
-        <button>Create New</button>
-      </Link>
-      <ul>
-        {listings.map(l => (
-          <li key={l.id}>
-            {l.title} — ${l.price}
-            <Link to={`/admin/listings/edit/${l.id}`}>Edit</Link>
-            <button onClick={() => remove(l.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+
+      {/* --- Filters ---*/}
+      <div className="filters">
+        <input
+          type="text"
+          placeholder="Search by title…"
+          value={search}
+          onChange={(e) => { setPage(1); setSearch(e.target.value); }}
+        />
+
+        <select
+          value={category}
+          onChange={(e) => { setPage(1); setCategory(e.target.value); }}
+        >
+          <option value="">All Categories</option>
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
+        </select>
+
+        <Link to="/admin/listings/edit/new">
+          <button>Create New</button>
+        </Link>
+      </div>
+
+      {error && <p className="error">{error}</p>}
+
+      {/* --- Listing Table or Loader ---*/}
+      {loading ? (
+        <p>Loading…</p>
+      ) : (
+        <table className="listings-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Price</th>
+              <th>Category</th>
+              <th>Owner</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {listings.map((l) => (
+              <tr key={l.id}>
+                <td>{l.title}</td>
+                <td>${l.price}</td>
+                <td>{l.category}</td>
+                <td>{l.owner?.username || "—"}</td>
+                <td>
+                  <Link to={`/admin/listings/edit/${l.id}`}>Edit</Link>{" "}
+                  <button className="danger" onClick={() => handleRemove(l.id)}>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      {/* ── Pagination Controls ───────────────────────────────────────────── */}
+      <div className="pagination">
+        <button
+          disabled={page <= 1}
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+        >
+          ← Prev
+        </button>
+        <span>Page {page} of {totalPages}</span>
+        <button
+          disabled={page >= totalPages}
+          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+        >
+          Next →
+        </button>
+      </div>
     </div>
   );
 }
-
-export default AdminListings;
