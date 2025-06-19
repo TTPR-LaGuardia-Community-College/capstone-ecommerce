@@ -1,45 +1,50 @@
+/* ─── App.css ───────────────────────────────────────────────── */
 
+/* 1) Box‐sizing reset */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
+/* 2) Base page styles */
 body {
   font-family: 'Inter', sans-serif;
-  background-color: #f9fafb;
+  background-color: #00b7ff;
   color: #1f2937;
   margin: 0;
   padding: 0;
   line-height: 1.6;
 }
 
+/* 3) App wrapper */
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
 }
 
+/* 4) Navbar (frosted‐glass) */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-  border-radius: 0.5rem;
 }
 
+/* 5) Navbar links & brand in red */
 .navbar a {
   margin-left: 1rem;
   text-decoration: none;
-  color: #374151;
+  color: #e63946;      /* ← all nav links are red now */
   font-weight: 500;
   transition: color 0.2s;
 }
-
 .navbar a:hover {
-  color: #10b981;
+  color: #a8323a;      /* darker red on hover */
 }
 
 .hero {
