@@ -1,9 +1,3 @@
-<<<<<<< HEAD
- 
-import React from 'react';
-import { Link } from 'react-router-dom';
-import './home.css';
-=======
 // import React from 'react';
 // import { Link } from 'react-router-dom';
 // import api from "../api.js";
@@ -86,7 +80,6 @@ export default function Home() {
 
   if (loading) return <p>Loading featured…</p>;
   if (error)   return <p className="error">{error}</p>;
->>>>>>> 91490b1a7a46b94bc266ad91512ee02371cf6cb8
 
   return (
     <div className="home-container">
@@ -112,8 +105,3 @@ export default function Home() {
 }
 
 
-<<<<<<< HEAD
-export default Home;
- 
-=======
->>>>>>> 91490b1a7a46b94bc266ad91512ee02371cf6cb8

@@ -1,13 +1,3 @@
-<<<<<<< HEAD
- 
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import './Navbar.css';
-
-const Navbar = () => {
-  const { cart, likedItems } = useCart(); 
-=======
 // src/components/Navbar.jsx
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -24,28 +14,11 @@ export default function Navbar() {
     logout();
     navigate("/");
   }
->>>>>>> 91490b1a7a46b94bc266ad91512ee02371cf6cb8
 
   return (
     <nav className="navbar">
       <NavLink to="/" className="nav__item">Home</NavLink>
 
-<<<<<<< HEAD
-      <div className="nav-links">
-        <NavLink to="/" className="nav-item" activeclassname="active">Home</NavLink>
-        <NavLink to="/admin" className="nav-item" activeclassname="active">Admin</NavLink>
-        <NavLink to="/products" className="nav-item" activeclassname="active">Products</NavLink>
-
-        <NavLink to="/cart" className="nav-item" activeclassname="active">
-          Cart <span className="badge">{cart.length}</span>
-        </NavLink>
-
-        <NavLink to="/liked" className="nav-item" activeclassname="active">
-          Liked <span className="badge">{likedItems.length}</span>
-        </NavLink>
-
-        <NavLink to="/create-listing" className="nav-item" activeclassname="active">Create Listing</NavLink>
-=======
       <div className="nav__item dropdown">
         <span>Products ▾</span>
         <ul className="dropdown-menu">
@@ -67,7 +40,6 @@ export default function Navbar() {
             </li>
           )}
         </ul>
->>>>>>> 91490b1a7a46b94bc266ad91512ee02371cf6cb8
       </div>
 
       {user && (

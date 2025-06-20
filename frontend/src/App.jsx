@@ -77,12 +77,8 @@ import EditListing from "./admin/EditListing.jsx";
 export default function App() {
   return (
     <>
-<<<<<<< HEAD
-       <Navbar />
-=======
       <Navbar />
 
->>>>>>> 91490b1a7a46b94bc266ad91512ee02371cf6cb8
       <Routes>
         {/* Public */}
         <Route path="/" element={<Home />} />
