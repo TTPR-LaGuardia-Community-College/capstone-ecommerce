@@ -1,134 +1,42 @@
-// import React, { useState, useEffect } from "react";
-// import { useParams } from "react-router-dom";
-
-// function ListingDetail() {
-//   const { id } = useParams();
-//   const [listing, setListing] = useState(null);
-//   const [message, setMessage] = useState("");
-
-//   useEffect(() => {
-//     async function fetchListing() {
-//       try {
-//         const res = await fetch(
-//           `${import.meta.env.VITE_API_URL}/listings/${id}`
-//         );
-//         setListing(await res.json());
-//       } catch (err) {
-//         console.error(err);
-//       }
-//     }
-//     fetchListing();
-//   }, [id]);
-
-//   async function handleAddWishlist() {
-//     try {
-//       const res = await fetch(`${import.meta.env.VITE_API_URL}/wishlist`, {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `Bearer ${localStorage.getItem("token")}`,
-//         },
-//         body: JSON.stringify({ listingId: id }),
-//       });
-//       if (res.ok) alert("Added to wishlist");
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   }
-
-//   async function handleSendMessage() {
-//     try {
-//       const res = await fetch(`${import.meta.env.VITE_API_URL}/messages`, {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `Bearer ${localStorage.getItem("token")}`,
-//         },
-//         body: JSON.stringify({
-//           receiverId: listing.owner.id,
-//           content: message,
-//         }),
-//       });
-//       if (res.ok) alert("Message sent");
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   }
-
-//   if (!listing) return <p>Loading…</p>;
-
-//   return (
-//     <div style={{ padding: "1rem" }}>
-//       <h2>{listing.title}</h2>
-//       <p>{listing.description}</p>
-//       <p>
-//         <strong>Price:</strong> ${listing.price}
-//       </p>
-//       <button onClick={handleAddWishlist}>Add to Wishlist</button>
-//       <hr />
-//       <h3>Message Seller ({listing.owner.username})</h3>
-//       <textarea
-//         rows="4"
-//         cols="50"
-//         value={message}
-//         onChange={(e) => setMessage(e.target.value)}
-//       />
-//       <br />
-//       <button onClick={handleSendMessage}>Send</button>
-//     </div>
-//   );
-// }
-
-// export default ListingDetail;
-
-
-import React, { useState, useEffect, useContext } from "react";
-import { useParams } from "react-router-dom";
-import api from "../api.js";
-import { useCart } from "../context/CartContext.jsx";
-import { toast } from "react-toastify";
-import "./ProductDetail.css";
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import api from '../api';
 
 export default function ProductDetail() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState("");
-  const { addToCart }         = useCart();
+  const [error, setError]     = useState('');
 
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await api.get(`/listings/${id}`);
-        setProduct(res.data);
-      } catch {
-        setError("Failed to load product");
-      } finally {
-        setLoading(false);
-      }
-    })();
+    api.get(`/listings/${id}`)
+      .then(res => setProduct(res.data))
+      .catch(err => setError(err.response?.data?.error || 'Failed to load product'))
+      .finally(() => setLoading(false));
   }, [id]);
 
-  if (loading) return <p>Loading…</p>;
-  if (error)   return <p className="error">{error}</p>;
+  if (loading) return <p className="text-center p-8">Loading product…</p>;
+  if (error)   return <p className="text-center text-red-500 p-8">{error}</p>;
+  if (!product) return null;
 
   return (
-    <div className="product-detail">
-      <img src={product.imageUrl} alt={product.title} />
-      <div className="info">
-        <h1>{product.title}</h1>
-        <p>${parseFloat(product.price).toFixed(2)}</p>
-        <p>{product.description}</p>
-        <button
-          onClick={async () => {
-            await addToCart(product.id);
-            toast.success("Added to cart");
-          }}
-        >
-          Add to Cart
-        </button>
+    <div className="max-w-3xl mx-auto p-4">
+      <img
+        src={product.imageUrl || '/placeholder.png'}
+        alt={product.title}
+        className="w-full h-64 object-cover rounded"
+      />
+
+      <h1 className="text-2xl font-bold mt-4">{product.title}</h1>
+      <p className="text-gray-700 text-xl mt-2">${product.price}</p>
+
+      <div className="prose prose-lg mt-6">
+        {product.description}
       </div>
+
+      <p className="text-gray-500 mt-6">
+        <span className="font-semibold">Seller:</span> {product.owner?.username || '—'}
+      </p>
     </div>
   );
 }
-

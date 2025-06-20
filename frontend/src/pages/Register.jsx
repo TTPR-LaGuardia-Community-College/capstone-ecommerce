@@ -207,49 +207,108 @@
 //   );
 // }
 
-import { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-function Register() {
-    const [form, setForm] = useState({ username: '', email: '', password: '', confirm: '' });
-    const [message, setMessage] = useState('');
+export default function Register() {
+  const { register } = useAuth();
+  const navigate = useNavigate();
 
-    const handleChange = e => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
+  const [form, setForm]       = useState({ username: '', email: '', password: '' });
+  const [error, setError]     = useState('');
+  const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (form.password !== form.confirm) {
-            setMessage('Passwords do not match');
-            return;
-        }
+  const handleChange = (e) => {
+    setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+  };
 
-        try {
-            const res = await axios.post('http://localhost:5000/api/register', {
-                username: form.username,
-                email: form.email,
-                password: form.password
-            });
-            setMessage(res.data.message);
-        } catch (err) {
-            setMessage(err.response?.data?.error || 'Registration failed');
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      await register(form.username, form.email, form.password);
+      navigate('/'); // or redirect to login page
+    } catch (err) {
+      setError(err.message || 'Failed to register');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return (
-        <div className="container mt-5" style={{ maxWidth: '500px' }}>
-            <h2>Register</h2>
-            {message && <p>{message}</p>}
-            <form onSubmit={handleSubmit}>
-                <input name="username" type="text" placeholder="Username" className="form-control mb-3" onChange={handleChange} required />
-                <input name="email" type="email" placeholder="Email" className="form-control mb-3" onChange={handleChange} required />
-                <input name="password" type="password" placeholder="Password" className="form-control mb-3" onChange={handleChange} required />
-                <input name="confirm" type="password" placeholder="Confirm Password" className="form-control mb-3" onChange={handleChange} required />
-                <button type="submit" className="btn btn-primary w-100 border-0" style={{backgroundColor:"#9d1347" }}>Register</button>
-            </form>
-        </div>
-    );
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="max-w-md w-full bg-white p-8 rounded shadow">
+        <h1 className="text-2xl font-bold mb-6 text-center">Register</h1>
+
+        {error && (
+          <p className="text-red-500 mb-4 text-center">{error}</p>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-gray-700 mb-1" htmlFor="username">
+              Username
+            </label>
+            <input
+              id="username"
+              name="username"
+              type="text"
+              value={form.username}
+              onChange={handleChange}
+              required
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring"
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 mb-1" htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              required
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring"
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 mb-1" htmlFor="password">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={handleChange}
+              required
+              minLength={6}
+              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 disabled:opacity-50"
+          >
+            {loading ? 'Registering…' : 'Register'}
+          </button>
+        </form>
+
+        <p className="mt-6 text-center text-gray-600">
+          Already have an account?{' '}
+          <Link to="/login" className="text-green-600 hover:underline">
+            Log In
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
 }
-
-export default Register;

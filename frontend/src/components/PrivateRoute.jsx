@@ -1,25 +1,16 @@
-import React, { useContext } from "react";
-import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "../context/AuthContext.jsx";
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-export default function PrivateRoute({ children, roles = [] }) {
-  const { user, loading } = useAuth();
-  const location          = useLocation();
-
-  if (loading) {
-    return <div className="spinner">Loading…</div>;
-  }
-
+export default function PrivateRoute({ children, adminOnly = false }) {
+  const { user } = useAuth();
   if (!user) {
-    // not logged in
-    return (
-      <Navigate to="/login" replace state={{ from: location }} />
-    );
+    // Not logged in
+    return <Navigate to="/login" />;
   }
-
-  if (roles.length && !roles.includes(user.role)) {
-    return <Navigate to="/" replace />;
+  if (adminOnly && user.role !== 'admin') {
+    // Logged in but not an admin
+    return <Navigate to="/" />;
   }
-
   return children;
 }
