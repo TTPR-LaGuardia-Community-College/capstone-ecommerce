@@ -121,7 +121,7 @@
 
 
 import React, { useContext, useMemo } from "react";
-import { CartContext } from "../context/CartContext.jsx";
+import { useCart } from "../context/CartContext.jsx";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./Cart.css";
@@ -135,7 +135,7 @@ export default function Cart() {
     clearCart,
     cartCount,
     totalPrice
-  } = useContext(CartContext);
+  } = useCart();
 
   const onRemove = async (id) => {
     try {

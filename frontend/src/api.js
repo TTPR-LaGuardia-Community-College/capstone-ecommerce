@@ -1,13 +1,8 @@
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL + "/api",
-});
+const ROOT = import.meta.env.VITE_API_URL;
+console.log("▶️ VITE_API_URL:", ROOT);
 
-api.interceptors.request.use(cfg => {
-  const token = localStorage.getItem("token");
-  if (token) cfg.headers.Authorization = `Bearer ${token}`;
-  return cfg;
+export default axios.create({
+  baseURL: `${ROOT}/api`,    // ← now calls http://localhost:3001/api/…
 });
-
-export default api;

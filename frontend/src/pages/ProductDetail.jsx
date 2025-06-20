@@ -85,7 +85,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api.js";
-import { CartContext } from "../context/CartContext.jsx";
+import { useCart } from "../context/CartContext.jsx";
 import { toast } from "react-toastify";
 import "./ProductDetail.css";
 
@@ -94,7 +94,7 @@ export default function ProductDetail() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState("");
-  const { addToCart }         = useContext(CartContext);
+  const { addToCart }         = useCart();
 
   useEffect(() => {
     (async () => {

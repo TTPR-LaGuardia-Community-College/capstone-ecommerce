@@ -1,117 +1,50 @@
-// src/context/CartContext.jsx
-import React, {
-  createContext,
-  useState,
-  useEffect,
-  useCallback,
-  useContext,     // ← make sure to import useContext
-  useMemo
-} from "react";
-import api from "../api.js";
-import { useAuth } from "./AuthContext.jsx";
+import React, { createContext, useContext, useState } from 'react';
 
-export const CartContext = createContext({
-  items: [],
-  loading: false,
-  error: null,
-  addToCart: async () => {},
-  removeFromCart: async () => {},
-  clearCart: async () => {},
-  cartCount: 0,
-  totalPrice: 0,
-});
+const CartContext = createContext();
+
+export const useCart = () => useContext(CartContext);
 
 export function CartProvider({ children }) {
-  const { user } = useAuth();
-  const [items, setItems]     = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState(null);
+    const [cartItems, setCartItems] = useState([]);
 
-  const fetchCart = useCallback(async () => {
-    if (!user) {
-      setItems([]);
-      return;
-    }
-    setLoading(true);
-    try {
-      const { data } = await api.get("/cart");
-      setItems(data);
-      setError(null);
-    } catch (err) {
-      setError(err.response?.data?.error || err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
+    const addToCart = (product, quantity = 1) => {
+        setCartItems(prev => {
+            const existing = prev.find(item => item.id === product.id);
+            if (existing) {
+                return prev.map(item =>
+                    item.id === product.id
+                        ? { ...item, quantity: item.quantity + quantity }
+                        : item
+                );
+            } else {
+                return [...prev, { ...product, quantity }];
+            }
+        });
+    };
 
-  useEffect(() => {
-    fetchCart();
-  }, [fetchCart]);
+    const updateQuantity = (productId, amount) => {
+        setCartItems(prev =>
+            prev
+                .map(item =>
+                    item.id === productId
+                        ? { ...item, quantity: Math.max(1, item.quantity + amount) }
+                        : item
+                )
+        );
+    };
 
-  const addToCart = useCallback(async (productId) => {
-    setLoading(true);
-    try {
-      const { data } = await api.post("/cart", { productId });
-      setItems(data);
-      setError(null);
-    } catch (err) {
-      setError(err.response?.data?.error || err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    const removeFromCart = (productId) => {
+        setCartItems(prev => prev.filter(item => item.id !== productId));
+    };
 
-  const removeFromCart = useCallback(async (productId) => {
-    setLoading(true);
-    try {
-      const { data } = await api.delete(`/cart/${productId}`);
-      setItems(data);
-      setError(null);
-    } catch (err) {
-      setError(err.response?.data?.error || err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const clearCart = useCallback(async () => {
-    setLoading(true);
-    try {
-      await Promise.all(items.map((i) => api.delete(`/cart/${i.productId}`)));
-      setItems([]);
-      setError(null);
-    } catch (err) {
-      setError(err.response?.data?.error || err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [items]);
-
-  const cartCount = useMemo(() => items.length, [items]);
-  const totalPrice = useMemo(
-    () => items.reduce((sum, i) => sum + parseFloat(i.Listing.price || 0), 0),
-    [items]
-  );
-
-  return (
-    <CartContext.Provider
-      value={{
-        items,
-        loading,
-        error,
+    const value = {
+        cartItems,
         addToCart,
+        updateQuantity,
         removeFromCart,
-        clearCart,
-        cartCount,
-        totalPrice,
-      }}
-    >
-      {children}
-    </CartContext.Provider>
-  );
+    };
+
+    return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
-// now this will work, since useContext is imported above
-export function useCart() {
-  return useContext(CartContext);
-}
+export default CartProvider;

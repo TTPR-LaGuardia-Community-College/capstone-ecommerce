@@ -11,9 +11,11 @@ export default defineConfig({
       input: "src/index.html"
     }
   },
-  plugins: [react()]
+  plugins: [react()],
+  server: {
+    port: 5173,        // ← make sure this is *not* 3001
+  },
 });
-
 /*
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
