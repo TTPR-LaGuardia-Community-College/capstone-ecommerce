@@ -48,7 +48,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar.jsx";
-import ProtectedRoute from '../components/ProtectedRoute';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 // Public pages
 import Home from "./pages/Home.jsx";
@@ -91,14 +91,6 @@ export default function App() {
         <Route path="/register" element={<Register />} />
 
         {/* User-protected */}
-        <Route
-          path="/create"
-          element={
-            <ProtectedRoute>
-              <CreateListing />
-            </ProtectedRoute>
-          }
-        />
         <Route
           path="/cart"
           element={

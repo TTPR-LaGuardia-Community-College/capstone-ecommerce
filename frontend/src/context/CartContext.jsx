@@ -1,114 +1,36 @@
-import React, {
-  createContext,
-  useState,
-  useEffect,
-  useCallback,
-  useContext,     // ← make sure to import useContext
-  useMemo
-} from "react";
-import api from "../api.js";
-import { useAuth } from "./AuthContext.jsx";
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import api from '../api';
 
-export const CartContext = createContext({
-  items: [],
-  loading: false,
-  error: null,
-  addToCart: async () => {},
-  removeFromCart: async () => {},
-  clearCart: async () => {},
-  cartCount: 0,
-  totalPrice: 0,
-});
+// 1. Create the context
+const CartContext = createContext();
 
+// 2. Provider component
 export function CartProvider({ children }) {
-  const { user } = useAuth();
-  const [items, setItems]     = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState(null);
+  const [cartCount, setCartCount] = useState(0);
 
-  const fetchCart = useCallback(async () => {
-    if (!user) {
-      setItems([]);
-      return;
-    }
-    setLoading(true);
-    try {
-      const { data } = await api.get("/cart");
-      setItems(data);
-      setError(null);
-    } catch (err) {
-      setError(err.response?.data?.error || err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
-
+  // Optional: fetch initial cart count on mount
   useEffect(() => {
-    fetchCart();
-  }, [fetchCart]);
-
-  const addToCart = useCallback(async (productId) => {
-    setLoading(true);
-    try {
-      const { data } = await api.post("/cart", { productId });
-      setItems(data);
-      setError(null);
-    } catch (err) {
-      setError(err.response?.data?.error || err.message);
-    } finally {
-      setLoading(false);
-    }
+    api.get('/cart')
+      .then(res => setCartCount(res.data.length))
+      .catch(console.error);
   }, []);
 
-  const removeFromCart = useCallback(async (productId) => {
-    setLoading(true);
-    try {
-      const { data } = await api.delete(`/cart/${productId}`);
-      setItems(data);
-      setError(null);
-    } catch (err) {
-      setError(err.response?.data?.error || err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const clearCart = useCallback(async () => {
-    setLoading(true);
-    try {
-      await Promise.all(items.map((i) => api.delete(`/cart/${i.productId}`)));
-      setItems([]);
-      setError(null);
-    } catch (err) {
-      setError(err.response?.data?.error || err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [items]);
-
-  const cartCount = useMemo(() => items.length, [items]);
-  const totalPrice = useMemo(
-    () => items.reduce((sum, i) => sum + parseFloat(i.Listing.price || 0), 0),
-    [items]
-  );
+  // If you ever want add/remove helpers, you could expose them here
+  const refreshCart = () =>
+    api.get('/cart').then(res => setCartCount(res.data.length));
 
   return (
-    <CartContext.Provider
-      value={{
-        items,
-        loading,
-        error,
-        addToCart,
-        updateQuantity,
-        removeFromCart,
-        clearCart,
-        cartCount,
-        totalPrice,
-      }}
-    >
+    <CartContext.Provider value={{ cartCount, refreshCart }}>
       {children}
     </CartContext.Provider>
   );
 }
 
-export default CartProvider;
+// 3. The missing hook: useCart
+export function useCart() {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart must be used within a <CartProvider>');
+  }
+  return context;
+}
