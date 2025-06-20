@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-export default function PrivateRoute({ children, adminOnly = false }) {
+export default function ProtectedRoute({ children, adminOnly = false }) {
   const { user } = useAuth();
   if (!user) {
     // Not logged in

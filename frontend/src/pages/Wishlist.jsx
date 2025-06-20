@@ -1,57 +1,35 @@
-import React, { useState, useEffect } from "react";
-import api from "../api.js";
-import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
-import "./Wishlist.css";
+import React, { useEffect, useState } from 'react';
+import api from '../api';
+import ProductCard from '../components/ProductCard';
 
 export default function Wishlist() {
-  const [items, setItems]     = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState("");
+  const [items, setItems] = useState([]);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await api.get("/wishlist");
-        setItems(res.data);
-      } catch {
-        setError("Failed to load wishlist");
-      } finally {
-        setLoading(false);
-      }
-    })();
+    api.get('/wishlist').then(res => setItems(res.data));
   }, []);
 
-  const onRemove = async (id) => {
-    try {
-      await api.delete(`/wishlist/${id}`);
-      setItems((prev) => prev.filter((i) => i.listingId !== id));
-      toast.info("Removed from wishlist");
-    } catch {
-      toast.error("Failed to remove");
-    }
+  const remove = async listingId => {
+    await api.delete(`/wishlist/${listingId}`);
+    setItems(items.filter(w => w.listingId !== listingId));
   };
 
-  if (loading) return <p>Loading wishlist…</p>;
-  if (error)   return <p className="error">{error}</p>;
-  if (!items.length) return <p>Your wishlist is empty.</p>;
-
   return (
-    <div className="wishlist-page">
-      <h1>Your Wishlist</h1>
-      <ul className="wishlist-list">
-        {items.map((i) => (
-          <li key={i.listingId}>
-            <Link to={`/products/${i.listingId}`}>
-              {i.listing.title}
-            </Link>
-            <span>${parseFloat(i.listing.price).toFixed(2)}</span>
-            <button onClick={() => onRemove(i.listingId)}>
-              Remove
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Your Wishlist</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {items.map(w => (
+          <div key={w.listingId} className="relative">
+            <ProductCard listing={w.listing} />
+            <button
+              onClick={() => remove(w.listingId)}
+              className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
+            >
+              ✕
             </button>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

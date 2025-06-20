@@ -48,19 +48,20 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar.jsx";
-import PrivateRoute from "./components/PrivateRoute.jsx";
+import ProtectedRoute from '../components/ProtectedRoute';
 
 // Public pages
 import Home from "./pages/Home.jsx";
 import Products from "./pages/Products.jsx";
 import ProductDetail from "./pages/ProductDetail.jsx";
 
+
 // Auth pages
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 
 // User-protected pages
-import CreateListing from "./pages/CreateListing.jsx";
+import ListingForm from './pages/ListingForm';
 import Cart from "./pages/Cart.jsx";
 import Wishlist from "./pages/Wishlist.jsx";
 import LikedProducts from "./pages/LikedProducts.jsx";
@@ -93,41 +94,41 @@ export default function App() {
         <Route
           path="/create"
           element={
-            <PrivateRoute>
+            <ProtectedRoute>
               <CreateListing />
-            </PrivateRoute>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/cart"
           element={
-            <PrivateRoute>
+            <ProtectedRoute>
               <Cart />
-            </PrivateRoute>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/wishlist"
           element={
-            <PrivateRoute>
+            <ProtectedRoute>
               <Wishlist />
-            </PrivateRoute>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/liked"
           element={
-            <PrivateRoute>
+            <ProtectedRoute>
               <LikedProducts />
-            </PrivateRoute>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/messages"
           element={
-            <PrivateRoute>
+            <ProtectedRoute>
               <Messages />
-            </PrivateRoute>
+            </ProtectedRoute>
           }
         />
 
@@ -138,30 +139,45 @@ export default function App() {
           path="/admin/forgot-password"
           element={<AdminForgotPassword />}
         />
-
+        <Route
+          path="/products/new"
+          element={
+            <ProtectedRoute>
+              <ListingForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/products/edit/:id"
+          element={
+            <ProtectedRoute>
+              <ListingForm />
+            </ProtectedRoute>
+          }
+        />
         {/* Admin-protected */}
         <Route
           path="/admin"
           element={
-            <PrivateRoute roles={["admin"]}>
+            <ProtectedRoute roles={["admin"]}>
               <AdminDashboard />
-            </PrivateRoute>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/admin/listings"
           element={
-            <PrivateRoute roles={["admin"]}>
+            <ProtectedRoute roles={["admin"]}>
               <AdminListings />
-            </PrivateRoute>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/admin/listings/edit/:id"
           element={
-            <PrivateRoute roles={["admin"]}>
+            <ProtectedRoute roles={["admin"]}>
               <EditListing />
-            </PrivateRoute>
+            </ProtectedRoute>
           }
         />
       </Routes>

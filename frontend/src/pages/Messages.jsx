@@ -1,60 +1,33 @@
-import React, { useState, useEffect } from "react";
-import api from "../api.js";
-import "./Messages.css";
+import React, { useEffect, useState } from 'react';
+import api from '../api';
 
 export default function Messages() {
   const [inbox, setInbox] = useState([]);
-  const [sent, setSent]   = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState("");
+  const [sent, setSent] = useState([]);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const [inRes, sentRes] = await Promise.all([
-          api.get("/messages/inbox"),
-          api.get("/messages/sent"),
-        ]);
-        setInbox(inRes.data);
-        setSent(sentRes.data);
-      } catch (err) {
-        setError("Failed to load messages");
-      } finally {
-        setLoading(false);
-      }
-    })();
+    api.get('/messages/inbox').then(res => setInbox(res.data));
+    api.get('/messages/sent').then(res => setSent(res.data));
   }, []);
 
-  if (loading) return <p>Loading messages…</p>;
-  if (error)   return <p className="error">{error}</p>;
-
   return (
-    <div className="messages-page">
+    <div className="p-4 space-y-8">
       <section>
-        <h2>Inbox</h2>
-        {inbox.length === 0 && <p>No messages.</p>}
-        {inbox.map((m) => (
-          <article key={m.id} className="message-card">
-            <header>
-              From: <strong>{m.sender.username}</strong>
-              <time>{new Date(m.createdAt).toLocaleString()}</time>
-            </header>
+        <h2 className="text-xl font-bold mb-2">Inbox</h2>
+        {inbox.map(m => (
+          <div key={m.id} className="border-b py-2">
+            <p><strong>From:</strong> {m.sender.username}</p>
             <p>{m.content}</p>
-          </article>
+          </div>
         ))}
       </section>
-
       <section>
-        <h2>Sent</h2>
-        {sent.length === 0 && <p>You haven’t sent any.</p>}
-        {sent.map((m) => (
-          <article key={m.id} className="message-card">
-            <header>
-              To: <strong>{m.receiver.username}</strong>
-              <time>{new Date(m.createdAt).toLocaleString()}</time>
-            </header>
+        <h2 className="text-xl font-bold mb-2">Sent</h2>
+        {sent.map(m => (
+          <div key={m.id} className="border-b py-2">
+            <p><strong>To:</strong> {m.receiver.username}</p>
             <p>{m.content}</p>
-          </article>
+          </div>
         ))}
       </section>
     </div>
