@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+=======
 // import React, { useState } from "react";
 // import { useNavigate } from "react-router-dom";
 
@@ -94,6 +99,7 @@ export default function CreateListing() {
   const [error, setError]     = useState("");
 
   if (!user) return <p>Please <Link to="/login">login</Link> to post a listing.</p>;
+>>>>>>> 91490b1a7a46b94bc266ad91512ee02371cf6cb8
 
   const onChange = (e) => {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
@@ -188,3 +194,59 @@ export default function CreateListing() {
   );
 }
 
+<<<<<<< HEAD
+const container = {
+  maxWidth: '500px',
+  margin: '3rem auto',
+  padding: '2rem',
+  border: '1px solid #eee',
+  borderRadius: '10px',
+  boxShadow: '0 0 10px rgba(0,0,0,0.05)',
+  background: '#fff',
+  fontFamily: 'Segoe UI, sans-serif'
+};
+
+const heading = {
+  marginBottom: '1.5rem',
+  textAlign: 'center',
+  color: '#333'
+};
+
+const label = {
+  display: 'block',
+  marginBottom: '0.5rem',
+  marginTop: '1rem',
+  fontWeight: '600'
+};
+
+const input = {
+  width: '100%',
+  padding: '0.6rem',
+  borderRadius: '5px',
+  border: '1px solid #ccc',
+  fontSize: '1rem'
+};
+
+const textarea = {
+  ...input,
+  height: '100px',
+  resize: 'vertical'
+};
+
+const button = {
+  width: '100%',
+  padding: '0.8rem',
+  backgroundColor: '#2e8b57',
+  color: 'white',
+  border: 'none',
+  borderRadius: '5px',
+  marginTop: '1.5rem',
+  fontWeight: 'bold',
+  fontSize: '1rem',
+  cursor: 'pointer'
+};
+
+export default CreateListing;
+ 
+=======
+>>>>>>> 91490b1a7a46b94bc266ad91512ee02371cf6cb8

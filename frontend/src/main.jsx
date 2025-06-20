@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+ import React from 'react';
+=======
 import React from 'react';
+>>>>>>> 91490b1a7a46b94bc266ad91512ee02371cf6cb8
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
