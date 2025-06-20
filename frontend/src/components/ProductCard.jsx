@@ -5,6 +5,11 @@ export default function ProductCard({ listing }) {
   return (
     <div className="bg-white shadow rounded overflow-hidden">
       <Link to={`/listings/${listing.id}`}>
+        < div className="relative">
+          <span className="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
+            {listing.category}
+          </span>
+        </div>
         <img
           src={listing.imageUrl || '/placeholder.png'}
           alt={listing.title}
