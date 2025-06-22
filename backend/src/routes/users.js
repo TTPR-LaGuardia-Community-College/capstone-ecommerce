@@ -1,15 +1,34 @@
-var express = require("express");
-const db = require("../db"); // Ensure this path is correct
+const express = require("express");
+const router  = express.Router();
+const { User } = require("../db/models");
+const { authenticate, requireAdmin } = require("../middleware/auth");
 
-var router = express.Router();
 
-const User = db["User"]; // Assuming you have a User model defined in your models/index.js
+router.get("/", authenticate, requireAdmin, async (req, res) => {
+  const users = await User.findAll({ attributes: { exclude: ["password"] } });
+  res.json(users);
+});
 
-/* GET users listing. */
-router.get("/", function (req, res, next) {
-  User.findAll().then((users) => {
-    res.json(users);
-  });
+
+router.get("/:id", authenticate, async (req, res) => {
+  if (req.user.id !== req.params.id && req.user.role !== "admin")
+    return res.status(403).end();
+  const user = await User.findByPk(req.params.id, { attributes: { exclude: ["password"] } });
+  res.json(user);
+});
+
+
+router.put("/:id", authenticate, async (req, res) => {
+  if (req.user.id !== req.params.id && req.user.role !== "admin")
+    return res.status(403).end();
+  await User.update(req.body, { where: { id: req.params.id } });
+  res.json({ message: "updated" });
+});
+
+
+router.delete("/:id", authenticate, requireAdmin, async (req, res) => {
+  await User.destroy({ where: { id: req.params.id } });
+  res.json({ message: "deleted" });
 });
 
 module.exports = router;
